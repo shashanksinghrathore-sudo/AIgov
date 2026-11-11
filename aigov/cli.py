@@ -1,22 +1,19 @@
 """Command line interface.
 
-    aigov assess -c aigov.yaml --out reports/           run an assessment
+    aigov serve --port 8080                             start the web platform
+    aigov assess -c aigov.yaml --out reports/           run the compliance tests from a config file
     aigov assess -c aigov.yaml --fail-on critical       CI gate (exit code 2 on breach)
-    aigov questionnaire --out answers.yaml              self-assessment template
-    aigov frameworks | controls | connectors            inspect the catalog
-    aigov serve --port 8080                             REST API
+    aigov questionnaire --framework eu_ai_act           answer template for the tests
+    aigov frameworks | requirements | connectors        inspect the rule library
 """
 from __future__ import annotations
 
 import argparse
-import json
 import sys
-import urllib.request
 from pathlib import Path
 
-from .catalog import load_controls, load_frameworks
+from .catalog import builtin_requirements, load_frameworks
 from .connectors.base import available
-from .engine import ai
 from .engine.assess import run_assessment
 from .pipeline import collect_file
 from .report.render import RENDERERS
@@ -24,57 +21,28 @@ from .report.render import RENDERERS
 PRIORITIES = ["low", "medium", "high", "critical"]
 
 
-def _post(url: str, payload: dict) -> None:
-    if not url.lower().startswith(("https://", "http://")):
-        raise ValueError("webhook must be an http(s) URL")
-    req = urllib.request.Request(url, data=json.dumps(payload).encode(), headers={"Content-Type": "application/json"})
-    urllib.request.urlopen(req, timeout=30).close()  # noqa: S310
-
-
-def webhook_payload(a) -> dict:
-    return {
-        "assessment_id": a.id, "entity": a.profile.entity.name, "overall_score": a.overall_score, "maturity": a.maturity,
-        "frameworks": {f.key: f.score for f in a.frameworks if f.applicable},
-        "gaps": [{
-            "control_id": g.control_id, "title": g.title, "status": g.status, "priority": g.priority,
-            "legally_binding": g.legally_binding, "recommendation": g.recommendations[0].action if g.recommendations else "",
-            "owner": g.recommendations[0].owner if g.recommendations else "",
-        } for g in a.gaps()],
-    }
-
-
 def cmd_assess(args) -> int:
-    profile, evidence, attestations, warnings = collect_file(args.config)
-    print(f"Collected {len(evidence)} evidence item(s) for {profile.entity.name}; assessing ({args.mode} mode)...", file=sys.stderr)
-    try:
-        a = run_assessment(profile, evidence, attestations, mode=args.mode, warnings=warnings, evidence_budget=args.evidence_budget)
-    except ai.AIError as e:
-        print(f"AI assessment failed: {e}", file=sys.stderr)
-        return 1
-
+    profile, evidence, answers, custom, warnings = collect_file(args.config)
+    print(f"Collected {len(evidence)} evidence item(s) and {len(answers)} answer(s) for {profile.entity.name}; testing...", file=sys.stderr)
+    a = run_assessment(profile, evidence, answers, custom, warnings)
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    for fmt in args.format.split(","):
-        path = out / f"assessment.{fmt.strip()}"
-        path.write_text(RENDERERS[fmt.strip()](a))
+    for fmt in [f.strip() for f in args.format.split(",") if f.strip()]:
+        path = out / f"assessment.{fmt}"
+        path.write_text(RENDERERS[fmt](a))
         print(f"Wrote {path}", file=sys.stderr)
 
     gaps = a.gaps()
-    print(f"\n{profile.entity.name}: {a.overall_score:.0f}/100 ({a.maturity}) - {'AI-assisted' if a.mode == 'ai' else 'rule-based'}")
+    print(f"\n{profile.entity.name}: {a.overall_score:.0f}/100 ({a.maturity}); {a.tests_answered}/{a.tests_total} tests answered")
     for f in a.frameworks:
         if f.applicable and f.score is not None:
-            print(f"  {f.name:<48} {f.score:>5.0f}  {'binding' if f.binding else 'voluntary'}")
-    print(f"  {len(gaps)} open finding(s): " + ", ".join(f"{sum(g.priority == p for g in gaps)} {p}" for p in reversed(PRIORITIES)))
-    for g in gaps[:8]:
-        print(f"  [{g.priority:<8}] {g.control_id} {g.title}")
+            print(f"  {f.name:<48} {f.score:>5.0f}  {f.in_scope:>3} articles  {'binding' if f.binding else 'voluntary'}")
+    print(f"  {len(gaps)} article(s) with gaps: " + ", ".join(f"{sum(g.priority == p for g in gaps)} {p}" for p in reversed(PRIORITIES)))
+    fws = load_frameworks()
+    for g in gaps[:10]:
+        print(f"  [{g.priority:<8}] {fws[g.framework].name} {g.ref} {g.title}")
     for w in a.warnings:
         print(f"  note: {w}", file=sys.stderr)
-
-    if args.webhook:
-        try:
-            _post(args.webhook, webhook_payload(a))
-        except Exception as e:
-            print(f"webhook failed: {e}", file=sys.stderr)
 
     breached = []
     if args.fail_under is not None and a.overall_score < args.fail_under:
@@ -91,13 +59,18 @@ def cmd_assess(args) -> int:
 
 
 def cmd_questionnaire(args) -> int:
-    lines = ["# Answer each control: yes | partial | no | na. Add notes and a pointer to the evidence."]
-    domain = None
-    for c in load_controls():
-        if c.domain != domain:
-            domain = c.domain
-            lines += ["", f"# --- {domain}"]
-        lines += [f"# {c.title}: {' '.join(c.objective.split())}", f"{c.id}: {{answer: no, notes: \"\", evidence_ref: \"\"}}"]
+    lines = ["# Answer each test: yes | partial | no | na. Delete lines you do not want to answer.",
+             "# A key without '-T<n>' answers every test of that article.", ""]
+    chapter = None
+    for r in builtin_requirements():
+        if r.kind == "info" or (args.framework and r.framework != args.framework):
+            continue
+        if r.chapter != chapter:
+            chapter = r.chapter
+            lines += ["", f"# ===== {load_frameworks()[r.framework].name} - {chapter}"]
+        lines.append(f"# {r.ref} {r.title}")
+        for t in r.tests:
+            lines += [f"#   {' '.join(t.question.split())}", f'{t.id}: {{answer: no, note: "", evidence_ref: ""}}']
     text = "\n".join(lines) + "\n"
     if args.out:
         Path(args.out).write_text(text)
@@ -108,18 +81,23 @@ def cmd_questionnaire(args) -> int:
 
 
 def cmd_frameworks(_) -> int:
+    reqs = builtin_requirements()
     for f in load_frameworks().values():
-        n = sum(f.key in c.mappings for c in load_controls())
-        print(f"{f.key:<16} {'binding' if f.binding else 'voluntary':<10} {n:>2} controls  {f.name} ({f.citation})")
+        mine = [r for r in reqs if r.framework == f.key]
+        if not mine:
+            continue
+        print(f"{f.key:<16} {'binding' if f.binding else 'voluntary':<10} {len(mine):>4} articles {sum(r.kind != 'info' for r in mine):>4} tested "
+              f"{sum(len(r.tests) for r in mine):>4} tests  {f.name}")
     return 0
 
 
-def cmd_controls(args) -> int:
-    for c in load_controls():
-        if args.framework and args.framework not in c.mappings:
+def cmd_requirements(args) -> int:
+    for r in builtin_requirements():
+        if args.framework and r.framework != args.framework:
             continue
-        refs = ", ".join(c.mappings[args.framework]) if args.framework else ", ".join(c.mappings)
-        print(f"{c.id:<7} w{c.weight}  {c.title:<62} {refs}")
+        if args.tested and r.kind == "info":
+            continue
+        print(f"{r.id:<24} {'test' if r.kind != 'info' else 'ref ':<4} {len(r.tests):>2}  {r.ref} {r.title}")
     return 0
 
 
@@ -129,39 +107,74 @@ def cmd_connectors(_) -> int:
     return 0
 
 
+def cmd_demo(args) -> int:
+    """Load the bundled example entity (profile, documents, repository scan, answers) into the platform database."""
+    import os
+
+    from .web.db import DB
+    db = DB(args.db or os.environ.get("AIGOV_DB", "aigov-data/aigov.db"))
+    profile, evidence, answers, _, _ = collect_file(Path(__file__).parent.parent / "examples" / "acme" / "aigov.yaml"
+                                                    if not args.config else args.config)
+    eid = db.save_entity(profile.model_dump())
+    for e in evidence:
+        if e.kind != "inventory":
+            db.add_evidence(eid, e.model_dump())
+    tests = {t.id: r for r in builtin_requirements() for t in r.tests}
+    reqs = {r.id: r for r in builtin_requirements()}
+    n = 0
+    for a in answers:
+        targets = [t.id for t in reqs[a.test_id].tests] if a.test_id in reqs else [a.test_id] if a.test_id in tests else []
+        for t in targets:
+            db.put_answer(eid, t, a.answer, a.note, a.evidence_ref)
+            n += 1
+    print(f"Loaded '{profile.entity.name}' as entity {eid}: {len(evidence)} evidence item(s), {n} answer(s).")
+    return 0
+
+
 def cmd_serve(args) -> int:
+    import os
+
     import uvicorn
-    uvicorn.run("aigov.api:app", host=args.host, port=args.port)
+    if args.db:
+        os.environ["AIGOV_DB"] = args.db
+    print(f"AI Compliance Platform on http://{args.host}:{args.port}  (data: {os.environ.get('AIGOV_DB', 'aigov-data/aigov.db')})", file=sys.stderr)
+    uvicorn.run("aigov.web.app:create_app", factory=True, host=args.host, port=args.port)
     return 0
 
 
 def main(argv: list[str] | None = None) -> int:
-    p = argparse.ArgumentParser(prog="aigov", description="AI governance and compliance assessment")
+    p = argparse.ArgumentParser(prog="aigov", description="AI governance and compliance testing platform (rule-based, offline)")
     sub = p.add_subparsers(dest="cmd", required=True)
 
-    a = sub.add_parser("assess", help="collect evidence and assess")
+    s = sub.add_parser("serve", help="start the web platform")
+    s.add_argument("--host", default="127.0.0.1")
+    s.add_argument("--port", type=int, default=8080)
+    s.add_argument("--db", help="SQLite database file (default aigov-data/aigov.db)")
+    s.set_defaults(fn=cmd_serve)
+
+    d = sub.add_parser("demo", help="load the example entity into the platform database")
+    d.add_argument("--db")
+    d.add_argument("-c", "--config", help="config file to load instead of the bundled example")
+    d.set_defaults(fn=cmd_demo)
+
+    a = sub.add_parser("assess", help="run the compliance tests from a config file")
     a.add_argument("-c", "--config", required=True)
-    a.add_argument("--mode", choices=["auto", "ai", "rules"], default="auto")
     a.add_argument("--out", default="aigov-report")
-    a.add_argument("--format", default="html,json,md")
+    a.add_argument("--format", default="html,json,md,csv")
     a.add_argument("--fail-under", type=float, help="exit 2 if the overall score is below this")
     a.add_argument("--fail-on", choices=PRIORITIES, help="exit 2 if any gap has this priority or higher")
-    a.add_argument("--webhook", help="POST a JSON summary of gaps to this URL")
-    a.add_argument("--evidence-budget", type=int, default=ai.DEFAULT_EVIDENCE_BUDGET, help="max evidence characters sent to the model")
     a.set_defaults(fn=cmd_assess)
 
-    q = sub.add_parser("questionnaire", help="write a self-assessment template")
+    q = sub.add_parser("questionnaire", help="write an answer template for the tests")
+    q.add_argument("--framework")
     q.add_argument("--out")
     q.set_defaults(fn=cmd_questionnaire)
     sub.add_parser("frameworks", help="list frameworks").set_defaults(fn=cmd_frameworks)
-    c = sub.add_parser("controls", help="list controls")
-    c.add_argument("--framework")
-    c.set_defaults(fn=cmd_controls)
-    sub.add_parser("connectors", help="list connectors").set_defaults(fn=cmd_connectors)
-    s = sub.add_parser("serve", help="run the REST API")
-    s.add_argument("--host", default="127.0.0.1")
-    s.add_argument("--port", type=int, default=8080)
-    s.set_defaults(fn=cmd_serve)
+    r = sub.add_parser("requirements", help="list articles and clauses")
+    r.add_argument("--framework")
+    r.add_argument("--tested", action="store_true", help="only articles that carry tests")
+    r.set_defaults(fn=cmd_requirements)
+    sub.add_parser("connectors", help="list evidence connectors").set_defaults(fn=cmd_connectors)
 
     args = p.parse_args(argv)
     return args.fn(args)

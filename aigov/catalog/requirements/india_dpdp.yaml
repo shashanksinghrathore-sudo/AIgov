@@ -1,0 +1,143 @@
+# India - Digital Personal Data Protection Act, 2023 (Act No. 22 of 2023). All 44 sections are listed.
+# Detailed procedures (notice content, breach intimation, consent managers, SDF duties) are set by the
+# DPDP Rules, 2025, which commence in phases. Summaries are paraphrased; verify which provisions are in force.
+
+framework: india_dpdp
+prefix: DPDP
+sections:
+  - chapter: Chapter I - Preliminary
+    items:
+      - {ref: s. 1, title: Short title and commencement, kind: info, note: Provisions commence on dates notified by the Central Government.}
+      - {ref: s. 2, title: Definitions, kind: info}
+      - {ref: s. 3, title: Application of Act, kind: info, note: "Applies to digital personal data processed in India, and outside India where connected to offering goods or services to Data Principals in India."}
+
+  - chapter: Chapter II - Obligations of Data Fiduciary
+    items:
+      - ref: s. 4
+        title: Grounds for processing personal data
+        summary: Personal data is processed only for a lawful purpose, with the Data Principal's consent or for a legitimate use under section 7.
+        controls: [DAT-03]
+        weight: 3
+      - ref: s. 5
+        title: Notice
+        summary: Every request for consent is accompanied or preceded by a notice describing the personal data and purpose, how to exercise rights and withdraw consent, and how to complain to the Board, available in English or a language of the Eighth Schedule; notice is also given for data collected before commencement.
+        controls: [DAT-03, TRN-02]
+        weight: 2
+      - ref: s. 6
+        title: Consent
+        summary: Consent is free, specific, informed, unconditional and unambiguous, given by clear affirmative action and limited to data necessary for the purpose; withdrawal is as easy as giving consent, and the Data Fiduciary can prove consent was given.
+        tests:
+          - Is consent for AI processing obtained through a clear affirmative action, limited to necessary data, and specific to the purpose?
+          - Can consent be withdrawn as easily as given, with processing (including by processors) stopped within a reasonable time?
+          - Can the Data Fiduciary prove the notice given and consent obtained?
+        controls: [DAT-03]
+        weight: 3
+      - ref: s. 7
+        title: Certain legitimate uses
+        summary: Where personal data is processed without consent, the processing falls within a legitimate use listed in section 7 (for example data voluntarily provided for a specified purpose, legal obligations, medical emergencies, employment purposes) and this is documented.
+        controls: [DAT-03]
+        weight: 2
+      - ref: s. 8
+        title: General obligations of Data Fiduciary
+        summary: The Data Fiduciary is responsible for compliance, including by its Data Processors, and maintains accuracy, security, breach intimation, erasure and grievance redressal.
+        tests:
+          - Are Data Processors engaged only under a valid contract, with the Data Fiduciary remaining responsible for their processing?
+          - Is personal data used to make decisions affecting a Data Principal complete, accurate and consistent?
+          - Are reasonable security safeguards in place to prevent personal data breaches, and are breaches intimated to the Board and each affected Data Principal as prescribed?
+          - Is personal data erased (and processors made to erase it) once the purpose is served or consent is withdrawn, unless retention is required by law?
+          - Are the business contact details of a DPO or person able to answer questions published, and is an effective grievance redressal mechanism in place?
+        controls: [DAT-01, DEV-04, OPS-03, TPR-01, DAT-04]
+        weight: 3
+      - ref: s. 9
+        title: Processing of personal data of children
+        need: [children_data]
+        summary: Verifiable consent of a parent or lawful guardian is obtained before processing data of a child (under 18), processing likely to harm a child's well-being is avoided, and children are not tracked, behaviourally monitored or targeted with advertising.
+        controls: [DAT-03]
+        weight: 3
+      - ref: s. 10
+        title: Additional obligations of Significant Data Fiduciary
+        need: [significant_data_fiduciary]
+        summary: A Significant Data Fiduciary appoints a DPO based in India, appoints an independent data auditor, and undertakes periodic Data Protection Impact Assessments and audits, along with measures prescribed by the Rules (including due diligence on algorithmic software).
+        tests:
+          - Is a Data Protection Officer based in India appointed and reporting to the board or governing body?
+          - Is an independent data auditor appointed, with periodic audits completed?
+          - Are periodic Data Protection Impact Assessments performed?
+          - Is due diligence performed to verify that algorithmic software used to process personal data is not likely to pose a risk to Data Principals' rights?
+        controls: [GOV-02, GOV-06, RSK-03, DEV-03]
+        weight: 3
+
+  - chapter: Chapter III - Rights and duties of Data Principal
+    items:
+      - ref: s. 11
+        title: Right to access information about personal data
+        summary: On request, Data Principals receive a summary of their personal data and processing activities and the identities of other Data Fiduciaries and Processors it was shared with.
+        controls: [DAT-04]
+        weight: 2
+      - ref: s. 12
+        title: Right to correction and erasure of personal data
+        summary: Data Principals can have personal data corrected, completed, updated and erased.
+        controls: [DAT-04]
+        weight: 2
+      - ref: s. 13
+        title: Right of grievance redressal
+        summary: Data Principals have a readily available means of grievance redressal, and grievances are answered within the prescribed period before they approach the Board.
+        controls: [DAT-04, HUM-02]
+        weight: 2
+      - ref: s. 14
+        title: Right to nominate
+        summary: Data Principals can nominate another individual to exercise their rights in the event of death or incapacity.
+        controls: [DAT-04]
+        weight: 1
+      - {ref: s. 15, title: Duties of Data Principal, kind: info}
+
+  - chapter: Chapter IV - Special provisions
+    items:
+      - ref: s. 16
+        title: Processing of personal data outside India
+        need: [international_transfers]
+        summary: Personal data is not transferred to countries restricted by Central Government notification, and stricter sectoral transfer or localisation rules are respected.
+        controls: [TPR-01]
+        weight: 2
+      - {ref: s. 17, title: Exemptions, kind: info}
+
+  - chapter: Chapter V - Data Protection Board of India
+    items:
+      - {ref: s. 18, title: Establishment of Board, kind: info}
+      - {ref: s. 19, title: Composition and qualifications for appointment of Chairperson and Members, kind: info}
+      - {ref: s. 20, title: "Salary, allowances payable to and term of office", kind: info}
+      - {ref: s. 21, title: Disqualifications for appointment and continuation as Chairperson and Members of Board, kind: info}
+      - {ref: s. 22, title: Resignation by Members and filling of vacancy, kind: info}
+      - {ref: s. 23, title: Proceedings of Board, kind: info}
+      - {ref: s. 24, title: Officers and employees of Board, kind: info}
+      - {ref: s. 25, title: Members and officers to be public servants, kind: info}
+      - {ref: s. 26, title: Powers of Chairperson, kind: info}
+
+  - chapter: Chapter VI - Powers, functions and procedure to be followed by Board
+    items:
+      - {ref: s. 27, title: Powers and functions of Board, kind: info}
+      - {ref: s. 28, title: Procedure to be followed by Board, kind: info}
+
+  - chapter: Chapter VII - Appeal and alternate dispute resolution
+    items:
+      - {ref: s. 29, title: Appeal to Appellate Tribunal, kind: info}
+      - {ref: s. 30, title: Orders passed by Appellate Tribunal to be executable as decree, kind: info}
+      - {ref: s. 31, title: Alternate dispute resolution, kind: info}
+      - {ref: s. 32, title: Voluntary undertaking, kind: info}
+
+  - chapter: Chapter VIII - Penalties and adjudication
+    items:
+      - {ref: s. 33, title: Penalties, kind: info, note: "Schedule penalties reach INR 250 crore for failure to take reasonable security safeguards and INR 200 crore for failing to notify breaches or for breaching children's data obligations."}
+      - {ref: s. 34, title: Crediting sums realised by way of penalties to Consolidated Fund of India, kind: info}
+
+  - chapter: Chapter IX - Miscellaneous
+    items:
+      - {ref: s. 35, title: Protection of action taken in good faith, kind: info}
+      - {ref: s. 36, title: Power to call for information, kind: info}
+      - {ref: s. 37, title: Power of Central Government to issue directions, kind: info}
+      - {ref: s. 38, title: Consistency with other laws, kind: info}
+      - {ref: s. 39, title: Bar of jurisdiction, kind: info}
+      - {ref: s. 40, title: Power to make rules, kind: info, note: "See the Digital Personal Data Protection Rules, 2025."}
+      - {ref: s. 41, title: Power to make regulations, kind: info}
+      - {ref: s. 42, title: Laying of rules and regulations, kind: info}
+      - {ref: s. 43, title: Power to amend Schedule, kind: info}
+      - {ref: s. 44, title: Amendments to certain Acts, kind: info}

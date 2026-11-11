@@ -3,7 +3,8 @@
 # `applies_when`   -> all listed conditions must hold for the framework to be in scope.
 #     jurisdictions: any-of match against entity.jurisdictions (prefix match, so "US" matches "US-CO")
 #     flags:         all-of match against derived profile flags (see engine/applicability.py)
-# Add a framework by adding an entry here and adding its key to `mappings` in controls.yaml.
+# Add a framework by adding an entry here and its articles in requirements/<file>.yaml
+# (or through the Rule Library page of the web platform).
 
 frameworks:
   eu_ai_act:
@@ -75,4 +76,12 @@ frameworks:
     kind: principles
     binding: false
     region: Global
+    applies_when: {}
+
+  custom:
+    name: Internal policies and custom rules
+    citation: Defined in this platform
+    kind: internal
+    binding: false
+    region: Entity-defined
     applies_when: {}

@@ -44,7 +44,7 @@ def register(name: str):
 
 
 def available() -> dict[str, type[Connector]]:
-    from . import documents, http, inventory, mlflow, questionnaire, repo  # noqa: F401  (register built-ins)
+    from . import documents, inventory, questionnaire, repo  # noqa: F401  (register built-ins)
     for ep in entry_points(group="aigov.connectors"):
         if ep.name not in _REGISTRY:
             _REGISTRY[ep.name] = ep.load()

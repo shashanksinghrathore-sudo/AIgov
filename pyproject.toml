@@ -4,17 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aigov"
-version = "0.1.0"
-description = "AI governance and compliance assessment: measure, find gaps, recommend improvements"
+version = "0.2.0"
+description = "Self-hosted AI governance and compliance testing platform: article-level rule library, gap analysis and recommendations"
 requires-python = ">=3.10"
-dependencies = ["pydantic>=2", "pyyaml>=6"]
+dependencies = ["pydantic>=2", "pyyaml>=6", "fastapi>=0.110", "uvicorn>=0.29"]
 
 [project.optional-dependencies]
-ai = ["anthropic>=2"]
-api = ["fastapi>=0.110", "uvicorn>=0.29"]
 docs = ["pypdf>=4", "python-docx>=1"]
-all = ["aigov[ai,api,docs]"]
-dev = ["aigov[all]", "pytest>=8", "httpx>=0.27"]
+dev = ["aigov[docs]", "pytest>=8", "httpx>=0.27"]
 
 [project.scripts]
 aigov = "aigov.cli:main"
@@ -23,7 +20,7 @@ aigov = "aigov.cli:main"
 include = ["aigov*"]
 
 [tool.setuptools.package-data]
-aigov = ["catalog/*.yaml"]
+aigov = ["catalog/*.yaml", "catalog/requirements/*.yaml", "web/static/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

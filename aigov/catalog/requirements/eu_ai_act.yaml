@@ -1,0 +1,504 @@
+# EU Artificial Intelligence Act - Regulation (EU) 2024/1689. Every article and annex is listed.
+# kind: info  -> reference only (definitions, duties of authorities, amendments); not scored.
+# Obligation summaries and test questions are paraphrased, not the official text. Verify against
+# the Official Journal version and any later amendments before relying on them.
+#
+# Applicability: `need` = all of these flags; `when` = at least one of these flags.
+
+framework: eu_ai_act
+prefix: EUAIA
+sections:
+  - chapter: Chapter I - General provisions
+    items:
+      - {ref: Art. 1, title: Subject matter, kind: info}
+      - ref: Art. 2
+        title: Scope
+        summary: The entity has determined whether the Regulation applies to each AI system it places on the EU market, puts into service, or whose output is used in the EU, and whether any exclusion applies (military, research, personal non-professional use, certain open-source releases).
+        tests:
+          - Has the entity documented, per AI system, whether the AI Act applies and in which role (provider, deployer, importer, distributor, authorised representative)?
+          - Where an exclusion is relied on, is the reasoning recorded and approved?
+        controls: [GOV-04, GOV-03]
+        weight: 2
+      - {ref: Art. 3, title: Definitions, kind: info, note: "Use the Art. 3 definitions of AI system, provider, deployer and substantial modification when scoping."}
+      - ref: Art. 4
+        title: AI literacy
+        when: [provider, deployer]
+        summary: Providers and deployers take measures to ensure a sufficient level of AI literacy among staff and other persons operating or using AI systems on their behalf, considering their knowledge, experience, training and the context of use.
+        tests:
+          - Is AI literacy training provided to staff who build, operate or use AI systems, proportionate to their role and the context of use?
+          - Are training content and completion recorded so the measures can be demonstrated?
+        controls: [GOV-05]
+        weight: 2
+
+  - chapter: Chapter II - Prohibited AI practices
+    items:
+      - ref: Art. 5
+        title: Prohibited AI practices
+        summary: No AI system is placed on the market, put into service or used for a prohibited practice - manipulative or deceptive techniques, exploitation of vulnerabilities, social scoring, crime-risk prediction based solely on profiling, untargeted scraping of facial images, emotion recognition in workplaces or education, biometric categorisation inferring sensitive traits, or real-time remote biometric identification in public spaces for law enforcement (save narrow exceptions).
+        tests:
+          - Has every AI system been screened against each Art. 5 prohibited practice, with the outcome recorded?
+          - Does policy expressly forbid prohibited practices, and is there a control that stops such use cases before development or procurement?
+        controls: [RSK-01, GOV-01]
+        weight: 3
+
+  - chapter: Chapter III - High-risk AI systems / Section 1 Classification
+    items:
+      - ref: Art. 6
+        title: Classification rules for high-risk AI systems
+        summary: Each AI system is classified as high-risk where it is a safety component of, or itself, a product covered by Annex I legislation requiring third-party conformity assessment, or where it falls in an Annex III use case; a provider relying on the Art. 6(3) derogation documents its assessment before placing on the market.
+        tests:
+          - Is every AI system classified against Annex I and Annex III, with the rationale documented?
+          - Where the Art. 6(3) "no significant risk" derogation is used, is the assessment documented before market placement and made available on request (and the system registered under Art. 49(2))?
+        controls: [RSK-01, GOV-03]
+        weight: 3
+      - {ref: Art. 7, title: Amendments to Annex III, kind: info, note: Commission power to update the Annex III list; monitor for changes affecting your systems.}
+
+  - chapter: Chapter III - High-risk AI systems / Section 2 Requirements
+    items:
+      - ref: Art. 8
+        title: Compliance with the requirements
+        need: [provider, high_risk]
+        summary: High-risk AI systems comply with the Section 2 requirements, taking into account their intended purpose and the generally acknowledged state of the art; where the product is also covered by Annex I legislation, compliance processes may be integrated.
+        controls: [RSK-02, DEV-01]
+        weight: 2
+      - ref: Art. 9
+        title: Risk management system
+        need: [provider, high_risk]
+        summary: A risk management system is established, implemented, documented and maintained as a continuous iterative process across the whole lifecycle of each high-risk AI system.
+        tests:
+          - Is a documented risk management system in place for each high-risk system and run across its lifecycle, with regular systematic review?
+          - Are known and reasonably foreseeable risks to health, safety and fundamental rights identified, estimated and evaluated, including under reasonably foreseeable misuse and using post-market monitoring data?
+          - Are risk management measures adopted so that residual risk is judged acceptable, and is residual risk communicated to deployers?
+          - Is the system tested against prior defined metrics and probabilistic thresholds before market placement, including in real-world conditions where appropriate?
+          - Is the impact on persons under 18 and other vulnerable groups specifically considered?
+        controls: [RSK-02, DEV-02]
+        weight: 3
+      - ref: Art. 10
+        title: Data and data governance
+        need: [provider, high_risk]
+        summary: Training, validation and testing data sets are subject to data governance practices and meet quality criteria appropriate to the intended purpose.
+        tests:
+          - Do documented data governance practices cover design choices, data collection and origin, preparation (annotation, labelling, cleaning), assumptions, and an assessment of availability and suitability?
+          - Are data sets examined for possible biases likely to affect health, safety or fundamental rights or lead to discrimination, with measures to detect, prevent and mitigate them?
+          - Are data sets relevant, sufficiently representative, as free of errors and complete as possible, and do they reflect the geographical, contextual and behavioural setting of use?
+          - Where special-category personal data is processed for bias detection, are the strict Art. 10(5) conditions and safeguards met and documented?
+        controls: [DAT-01, DAT-02, DAT-03]
+        weight: 3
+      - ref: Art. 11
+        title: Technical documentation
+        need: [provider, high_risk]
+        summary: Technical documentation demonstrating compliance is drawn up before the system is placed on the market, kept up to date, and contains at least the elements in Annex IV.
+        tests:
+          - Does technical documentation exist for each high-risk system covering the Annex IV elements (description, development process, monitoring and control, metrics, risk management, changes, standards applied, declaration of conformity, post-market monitoring plan)?
+          - Is the documentation completed before market placement and updated with each change?
+        controls: [DEV-01]
+        weight: 3
+      - ref: Art. 12
+        title: Record-keeping
+        need: [provider, high_risk]
+        summary: High-risk AI systems technically allow automatic recording of events (logs) over their lifetime, enabling traceability appropriate to the intended purpose.
+        tests:
+          - Does each high-risk system automatically log events relevant to identifying risk situations and substantial modifications, post-market monitoring and deployer monitoring?
+          - For remote biometric identification systems, do logs record period of use, reference database, input data matched and the persons verifying results?
+        controls: [OPS-01]
+        weight: 3
+      - ref: Art. 13
+        title: Transparency and provision of information to deployers
+        need: [provider, high_risk]
+        summary: High-risk systems are transparent enough for deployers to interpret and use output appropriately, and are accompanied by instructions for use.
+        tests:
+          - Do instructions for use state the provider's identity, the system's characteristics, capabilities and limitations, intended purpose, accuracy and robustness metrics, known risks, and conditions affecting performance?
+          - Do they describe human oversight measures, required computational resources, expected lifetime, maintenance, and how to collect and interpret logs?
+        controls: [TRN-02, TRN-03]
+        weight: 2
+      - ref: Art. 14
+        title: Human oversight
+        need: [provider, high_risk]
+        summary: High-risk systems are designed to be effectively overseen by natural persons while in use, with measures commensurate to risk, autonomy and context.
+        tests:
+          - Are oversight measures identified and either built into the system or specified for the deployer to implement?
+          - Can overseers understand capacities and limitations, detect anomalies, stay aware of automation bias, and correctly interpret output?
+          - Can overseers decide not to use the system, disregard, override or reverse output, and interrupt it through a stop procedure that brings it to a safe state?
+          - For Annex III point 1(a) biometric identification, is any action based on the result verified by at least two competent persons?
+        controls: [HUM-01]
+        weight: 3
+      - ref: Art. 15
+        title: Accuracy, robustness and cybersecurity
+        need: [provider, high_risk]
+        summary: High-risk systems achieve an appropriate level of accuracy, robustness and cybersecurity, and perform consistently throughout their lifecycle.
+        tests:
+          - Are accuracy levels and metrics declared in the instructions for use and verified by testing?
+          - Is the system resilient to errors, faults and inconsistencies (technical redundancy, fail-safe plans), and are feedback loops in continuously learning systems mitigated?
+          - Is the system protected against AI-specific attacks such as data poisoning, model poisoning, adversarial examples, model evasion and confidentiality attacks?
+        controls: [DEV-02, DEV-04]
+        weight: 3
+
+  - chapter: Chapter III - High-risk AI systems / Section 3 Obligations of providers, deployers and other parties
+    items:
+      - ref: Art. 16
+        title: Obligations of providers of high-risk AI systems
+        need: [provider, high_risk]
+        summary: Providers ensure Section 2 compliance, identify themselves on the system, operate a quality management system, keep documentation and logs, complete conformity assessment, draw up the EU declaration, affix CE marking, register, take corrective action, demonstrate conformity on request and meet accessibility requirements.
+        tests:
+          - Is the provider's name, registered trade name or trademark and contact address indicated on the system, its packaging or documentation?
+          - Is there a tracked plan showing each provider obligation (QMS, documentation, logs, conformity assessment, declaration, CE marking, registration, corrective action, accessibility) is met for every high-risk system?
+        controls: [RSK-04, DEV-01, GOV-04]
+        weight: 3
+      - ref: Art. 17
+        title: Quality management system
+        need: [provider, high_risk]
+        summary: Providers put in place a documented quality management system, in written policies, procedures and instructions, proportionate to the size of the organisation.
+        tests:
+          - Does the QMS cover a regulatory compliance strategy (including management of modifications), design and development control, quality assurance, and test and validation procedures?
+          - Does it cover technical specifications and standards, data management, risk management, post-market monitoring, serious incident reporting, and communication with authorities and customers?
+          - Does it cover record-keeping, resource management (including security of supply) and an accountability framework defining management and staff responsibilities?
+        controls: [GOV-01, GOV-02, DEV-05, GOV-06]
+        weight: 3
+      - ref: Art. 18
+        title: Documentation keeping
+        need: [provider, high_risk]
+        summary: For ten years after the system is placed on the market, providers keep the technical documentation, QMS documentation, notified body approvals and decisions, and the EU declaration of conformity available to authorities.
+        controls: [DEV-01, OPS-01]
+        weight: 2
+      - ref: Art. 19
+        title: Automatically generated logs
+        need: [provider, high_risk]
+        summary: Providers keep the automatically generated logs under their control for a period appropriate to the intended purpose, of at least six months unless other law provides otherwise.
+        controls: [OPS-01]
+        weight: 2
+      - ref: Art. 20
+        title: Corrective actions and duty of information
+        need: [provider, high_risk]
+        summary: A provider that considers a high-risk system non-conforming immediately corrects it, withdraws, disables or recalls it, informs distributors, deployers, authorised representative and importers, and where it presents a risk, investigates and informs market surveillance authorities.
+        tests:
+          - Is there a procedure to correct, withdraw, disable or recall a non-conforming high-risk system without delay?
+          - Does the procedure require informing the value chain and, where a risk exists, the competent authorities and notified body?
+        controls: [OPS-04, OPS-03]
+        weight: 2
+      - ref: Art. 21
+        title: Cooperation with competent authorities
+        need: [provider, high_risk]
+        summary: On a reasoned request, providers give competent authorities all information and documentation needed to demonstrate conformity, in an easily understood language, and access to logs under their control.
+        controls: [GOV-04, OPS-01]
+        weight: 1
+      - ref: Art. 22
+        title: Authorised representatives of providers of high-risk AI systems
+        need: [provider, high_risk, non_eu_established]
+        summary: A provider established outside the EU appoints, by written mandate, an authorised representative established in the EU before making a high-risk system available, empowered to verify documentation, keep records for ten years, provide information and cooperate with authorities.
+        controls: [GOV-02]
+        weight: 2
+      - ref: Art. 23
+        title: Obligations of importers
+        need: [importer, high_risk]
+        summary: Before placing a high-risk system on the market, importers verify that conformity assessment was done, technical documentation exists, CE marking, declaration and instructions are present, and an authorised representative is appointed; they identify themselves, keep records for ten years and cooperate with authorities.
+        tests:
+          - Is there a pre-market verification checklist covering conformity assessment, technical documentation, CE marking, declaration of conformity, instructions for use and authorised representative?
+          - Are non-conforming systems blocked from the market, and are importer details and records kept for ten years?
+        controls: [TPR-01, RSK-04]
+        weight: 2
+      - ref: Art. 24
+        title: Obligations of distributors
+        need: [distributor, high_risk]
+        summary: Before making a high-risk system available, distributors verify CE marking, declaration of conformity and instructions, and that provider and importer obligations were met; they withhold or correct non-conforming systems and cooperate with authorities.
+        controls: [TPR-01]
+        weight: 2
+      - ref: Art. 25
+        title: Responsibilities along the AI value chain
+        need: [high_risk]
+        when: [provider, deployer, importer, distributor]
+        summary: A distributor, importer, deployer or other third party becomes a provider if it puts its name or trademark on a high-risk system, makes a substantial modification, or changes the intended purpose so a system becomes high-risk; providers of components agree in writing the information and assistance needed.
+        tests:
+          - Has the entity checked whether rebranding, substantial modification or a change of intended purpose makes it the provider of any high-risk system?
+          - Are there written agreements with suppliers of tools, services, components or models integrated into high-risk systems, specifying information, capabilities, technical access and assistance?
+        controls: [TPR-01, DEV-05]
+        weight: 2
+      - ref: Art. 26
+        title: Obligations of deployers of high-risk AI systems
+        need: [deployer, high_risk]
+        summary: Deployers use high-risk systems according to the instructions for use, assign competent human oversight, control input data quality, monitor operation, keep logs, inform workers and affected persons, register where they are public authorities, and cooperate with authorities.
+        tests:
+          - Are technical and organisational measures in place to use each high-risk system in accordance with its instructions for use?
+          - Is human oversight assigned to persons with the necessary competence, training, authority and support?
+          - Where the deployer controls input data, is it relevant and sufficiently representative for the intended purpose?
+          - Is operation monitored, with the provider and authorities informed and use suspended where a risk or serious incident arises?
+          - Are logs under the deployer's control kept for at least six months?
+          - Before workplace use, are workers' representatives and affected workers informed?
+          - Are natural persons subject to Annex III decisions informed that a high-risk AI system is used?
+        controls: [HUM-01, OPS-01, OPS-02, OPS-03, TRN-04]
+        weight: 3
+      - ref: Art. 27
+        title: Fundamental rights impact assessment for high-risk AI systems
+        need: [deployer, high_risk]
+        when: [public_body, credit_or_insurance]
+        summary: Public bodies, private entities providing public services, and deployers of credit-scoring or life and health insurance pricing systems perform a fundamental rights impact assessment before first use and notify the market surveillance authority of its results.
+        tests:
+          - Was a FRIA completed before first use, describing the deployer's processes, period and frequency of use, categories of persons affected, specific risks of harm, human oversight measures, and measures if risks materialise (including governance and complaints)?
+          - Has the market surveillance authority been notified of the results, and is the FRIA updated when relevant elements change?
+        controls: [RSK-03]
+        weight: 3
+
+  - chapter: Chapter III - High-risk AI systems / Section 4 Notifying authorities and notified bodies
+    items:
+      - {ref: Art. 28, title: Notifying authorities, kind: info, note: Addressed to Member States.}
+      - {ref: Art. 29, title: Application of a conformity assessment body for notification, kind: info, note: Addressed to conformity assessment bodies.}
+      - {ref: Art. 30, title: Notification procedure, kind: info}
+      - {ref: Art. 31, title: Requirements relating to notified bodies, kind: info}
+      - {ref: Art. 32, title: Presumption of conformity with requirements relating to notified bodies, kind: info}
+      - {ref: Art. 33, title: Subsidiaries of notified bodies and subcontracting, kind: info}
+      - {ref: Art. 34, title: Operational obligations of notified bodies, kind: info}
+      - {ref: Art. 35, title: Identification numbers and lists of notified bodies, kind: info}
+      - {ref: Art. 36, title: Changes to notifications, kind: info}
+      - {ref: Art. 37, title: Challenge to the competence of notified bodies, kind: info}
+      - {ref: Art. 38, title: Coordination of notified bodies, kind: info}
+      - {ref: Art. 39, title: Conformity assessment bodies of third countries, kind: info}
+
+  - chapter: Chapter III - High-risk AI systems / Section 5 Standards, conformity assessment, certificates, registration
+    items:
+      - {ref: Art. 40, title: Harmonised standards and standardisation deliverables, kind: info, note: Applying published harmonised standards gives a presumption of conformity; track their publication.}
+      - {ref: Art. 41, title: Common specifications, kind: info}
+      - {ref: Art. 42, title: Presumption of conformity with certain requirements, kind: info}
+      - ref: Art. 43
+        title: Conformity assessment
+        need: [provider, high_risk]
+        summary: Providers follow the applicable conformity assessment procedure - internal control (Annex VI) or assessment of the QMS and technical documentation with a notified body (Annex VII) - and repeat it after a substantial modification.
+        tests:
+          - Has the applicable conformity assessment route been determined and completed for each high-risk system before market placement?
+          - Does change management trigger a new conformity assessment on substantial modification?
+        controls: [RSK-04, DEV-05]
+        weight: 3
+      - {ref: Art. 44, title: Certificates, kind: info, note: Issued by notified bodies.}
+      - {ref: Art. 45, title: Information obligations of notified bodies, kind: info}
+      - {ref: Art. 46, title: Derogation from conformity assessment procedure, kind: info, note: Exceptional authorisation by market surveillance authorities.}
+      - ref: Art. 47
+        title: EU declaration of conformity
+        need: [provider, high_risk]
+        summary: Providers draw up a written, machine-readable, signed EU declaration of conformity for each high-risk system containing the Annex V information, keep it for ten years and keep it up to date.
+        controls: [RSK-04]
+        weight: 2
+      - ref: Art. 48
+        title: CE marking
+        need: [provider, high_risk]
+        summary: CE marking is affixed visibly, legibly and indelibly (digitally for digital-only systems), followed by the notified body's identification number where applicable.
+        controls: [RSK-04]
+        weight: 2
+      - ref: Art. 49
+        title: Registration
+        need: [high_risk]
+        when: [provider, public_body]
+        summary: Before placing an Annex III high-risk system on the market, the provider registers itself and the system in the EU database; providers relying on the Art. 6(3) derogation also register; public-authority deployers register their use.
+        controls: [RSK-04, GOV-03]
+        weight: 2
+
+  - chapter: Chapter IV - Transparency obligations for providers and deployers of certain AI systems
+    items:
+      - ref: Art. 50
+        title: Transparency obligations for providers and deployers of certain AI systems
+        when: [consumer_facing, generative, emotion_biometric]
+        summary: People are informed when they interact with an AI system, AI-generated or manipulated content is marked and disclosed, and people exposed to emotion recognition or biometric categorisation are informed.
+        tests:
+          - Are people informed that they are interacting with an AI system, unless obvious from context?
+          - Are synthetic audio, image, video or text outputs marked in a machine-readable format and detectable as artificially generated?
+          - Are deep fakes, and AI-generated text published to inform the public on matters of public interest, disclosed as artificially generated or manipulated (unless under human editorial responsibility)?
+          - Are persons exposed to emotion recognition or biometric categorisation informed of its operation?
+          - Is the information given clearly and distinguishably at the latest at the first interaction or exposure, meeting accessibility requirements?
+        controls: [TRN-01]
+        weight: 2
+
+  - chapter: Chapter V - General-purpose AI models
+    items:
+      - ref: Art. 51
+        title: Classification of general-purpose AI models as general-purpose AI models with systemic risk
+        need: [gpai_provider]
+        summary: The provider assesses whether its general-purpose AI model has high-impact capabilities (presumed above 10^25 FLOPs of cumulative training compute) or has been designated by the Commission as presenting systemic risk.
+        controls: [RSK-01, GPA-01]
+        weight: 2
+      - ref: Art. 52
+        title: Procedure
+        need: [gpai_provider]
+        summary: The provider notifies the Commission without delay, and within two weeks, once its model meets or is known to meet the systemic-risk threshold, and may argue the model does not present systemic risk.
+        controls: [GPA-01, GOV-04]
+        weight: 2
+      - ref: Art. 53
+        title: Obligations for providers of general-purpose AI models
+        need: [gpai_provider]
+        summary: GPAI model providers keep technical documentation, give downstream providers the information they need, maintain a copyright compliance policy, and publish a summary of training content.
+        tests:
+          - Is technical documentation (Annex XI), including training and testing process and evaluation results, kept up to date and available to the AI Office?
+          - Is information and documentation (Annex XII) available to downstream providers integrating the model?
+          - Is there a policy to comply with EU copyright law, including identifying and honouring text-and-data-mining rights reservations?
+          - Has a sufficiently detailed summary of training content been published using the AI Office template?
+        controls: [GPA-01, DEV-01]
+        weight: 3
+      - ref: Art. 54
+        title: Authorised representatives of providers of general-purpose AI models
+        need: [gpai_provider, non_eu_established]
+        summary: A GPAI model provider established outside the EU appoints an EU authorised representative by written mandate before placing the model on the market.
+        controls: [GOV-02]
+        weight: 2
+      - ref: Art. 55
+        title: Obligations of providers of general-purpose AI models with systemic risk
+        need: [gpai_systemic]
+        summary: Providers of systemic-risk GPAI models evaluate the model with state-of-the-art protocols including adversarial testing, assess and mitigate systemic risks, report serious incidents, and ensure adequate cybersecurity.
+        tests:
+          - Are model evaluations, including documented adversarial testing, performed with standardised protocols?
+          - Are possible systemic risks at Union level assessed and mitigated, including their sources?
+          - Are serious incidents and corrective measures tracked, documented and reported to the AI Office and national authorities without undue delay?
+          - Is an adequate level of cybersecurity ensured for the model and its physical infrastructure?
+        controls: [GPA-01, DEV-04, OPS-03]
+        weight: 3
+      - ref: Art. 56
+        title: Codes of practice
+        need: [gpai_provider]
+        binding: false
+        summary: The provider has decided whether to rely on the general-purpose AI code of practice to demonstrate compliance, or documented alternative adequate means of compliance.
+        controls: [GOV-04]
+        weight: 1
+
+  - chapter: Chapter VI - Measures in support of innovation
+    items:
+      - {ref: Art. 57, title: AI regulatory sandboxes, kind: info, note: Established by Member States; participation is voluntary.}
+      - {ref: Art. 58, title: "Detailed arrangements for, and functioning of, AI regulatory sandboxes", kind: info}
+      - {ref: Art. 59, title: Further processing of personal data for developing certain AI systems in the public interest in the AI regulatory sandbox, kind: info}
+      - ref: Art. 60
+        title: Testing of high-risk AI systems in real world conditions outside AI regulatory sandboxes
+        need: [real_world_testing]
+        summary: Real-world testing of Annex III high-risk systems follows an approved real-world testing plan and the safeguards of Art. 60.
+        tests:
+          - Was a real-world testing plan submitted to and approved by the market surveillance authority, and the test registered with an EU-wide identification number?
+          - Is testing limited in duration (six months, extendable once), with vulnerable groups protected, effective oversight, and predictions or decisions able to be reversed or disregarded?
+          - Are serious incidents during testing reported, and can subjects withdraw at any time?
+        controls: [RSK-02, HUM-01, OPS-03]
+        weight: 2
+      - ref: Art. 61
+        title: Informed consent to participate in testing in real world conditions outside AI regulatory sandboxes
+        need: [real_world_testing]
+        summary: Freely given informed consent is obtained from test subjects before participation, covering the nature and objectives of testing, duration, their rights including withdrawal without detriment, and how to request reversal; consent is dated, documented and a copy given.
+        controls: [DAT-03]
+        weight: 2
+      - {ref: Art. 62, title: "Measures for providers and deployers, in particular SMEs, including start-ups", kind: info, note: Support measures by Member States.}
+      - {ref: Art. 63, title: Derogations for specific operators, kind: info, note: Microenterprises may comply with certain QMS elements in a simplified manner.}
+
+  - chapter: Chapter VII - Governance
+    items:
+      - {ref: Art. 64, title: AI Office, kind: info}
+      - {ref: Art. 65, title: Establishment and structure of the European Artificial Intelligence Board, kind: info}
+      - {ref: Art. 66, title: Tasks of the Board, kind: info}
+      - {ref: Art. 67, title: Advisory forum, kind: info}
+      - {ref: Art. 68, title: Scientific panel of independent experts, kind: info}
+      - {ref: Art. 69, title: Access to the pool of experts by the Member States, kind: info}
+      - {ref: Art. 70, title: Designation of national competent authorities and single points of contact, kind: info, note: Identify your national market surveillance authority.}
+
+  - chapter: Chapter VIII - EU database for high-risk AI systems
+    items:
+      - {ref: Art. 71, title: EU database for high-risk AI systems listed in Annex III, kind: info, note: Registration duties are tested under Art. 49.}
+
+  - chapter: Chapter IX - Post-market monitoring, information sharing and market surveillance
+    items:
+      - ref: Art. 72
+        title: Post-market monitoring by providers and post-market monitoring plan for high-risk AI systems
+        need: [provider, high_risk]
+        summary: Providers establish and document a post-market monitoring system that actively and systematically collects, documents and analyses performance data throughout the system's lifetime, based on a post-market monitoring plan included in the technical documentation.
+        tests:
+          - Is there a post-market monitoring plan for each high-risk system, part of its technical documentation?
+          - Is performance data (from deployers or other sources) actively collected and analysed to evaluate continuous compliance?
+        controls: [OPS-02]
+        weight: 3
+      - ref: Art. 73
+        title: Reporting of serious incidents
+        need: [provider, high_risk]
+        summary: Providers report serious incidents to the market surveillance authority where the incident occurred immediately after establishing a causal link, and no later than 15 days after becoming aware (2 days for widespread infringements or serious critical-infrastructure disruption, 10 days in case of death), then investigate without altering the system in a way that affects evaluation.
+        tests:
+          - Does the incident procedure define "serious incident" and the 15-day, 10-day and 2-day reporting deadlines?
+          - Does it require investigation, risk assessment and corrective action while preserving evidence?
+        controls: [OPS-03]
+        weight: 3
+      - {ref: Art. 74, title: Market surveillance and control of AI systems in the Union market, kind: info}
+      - {ref: Art. 75, title: "Mutual assistance, market surveillance and control of general-purpose AI systems", kind: info}
+      - {ref: Art. 76, title: Supervision of testing in real world conditions by market surveillance authorities, kind: info}
+      - {ref: Art. 77, title: Powers of authorities protecting fundamental rights, kind: info}
+      - {ref: Art. 78, title: Confidentiality, kind: info}
+      - {ref: Art. 79, title: Procedure at national level for dealing with AI systems presenting a risk, kind: info}
+      - {ref: Art. 80, title: Procedure for dealing with AI systems classified by the provider as non-high-risk in application of Annex III, kind: info}
+      - {ref: Art. 81, title: Union safeguard procedure, kind: info}
+      - {ref: Art. 82, title: Compliant AI systems which present a risk, kind: info}
+      - {ref: Art. 83, title: Formal non-compliance, kind: info}
+      - {ref: Art. 84, title: Union AI testing support structures, kind: info}
+      - {ref: Art. 85, title: Right to lodge a complaint with a market surveillance authority, kind: info, note: Any person may complain; complaints handling is tested under Art. 26 and Art. 86.}
+      - ref: Art. 86
+        title: Right to explanation of individual decision-making
+        need: [deployer, high_risk]
+        when: [consequential_decisions, automated_decisions]
+        summary: A person affected by a decision based on the output of an Annex III high-risk system that has legal or similarly significant effects can obtain from the deployer clear and meaningful explanations of the role of the AI system in the decision and the main elements of the decision.
+        controls: [TRN-03, HUM-02]
+        weight: 2
+      - ref: Art. 87
+        title: Reporting of infringements and protection of reporting persons
+        when: [provider, deployer]
+        summary: Internal reporting channels cover infringements of the AI Act and protect reporting persons in line with Directive (EU) 2019/1937.
+        controls: [GOV-02]
+        weight: 1
+      - {ref: Art. 88, title: Enforcement of the obligations of providers of general-purpose AI models, kind: info}
+      - {ref: Art. 89, title: Monitoring actions, kind: info}
+      - {ref: Art. 90, title: Alerts of systemic risks by the scientific panel, kind: info}
+      - {ref: Art. 91, title: Power to request documentation and information, kind: info}
+      - {ref: Art. 92, title: Power to conduct evaluations, kind: info}
+      - {ref: Art. 93, title: Power to request measures, kind: info}
+      - {ref: Art. 94, title: Procedural rights of economic operators of the general-purpose AI model, kind: info}
+
+  - chapter: Chapter X - Codes of conduct and guidelines
+    items:
+      - ref: Art. 95
+        title: Codes of conduct for voluntary application of specific requirements
+        when: [provider, deployer]
+        binding: false
+        summary: For AI systems that are not high-risk, the entity has considered voluntarily applying high-risk requirements or a code of conduct (for example on sustainability, accessibility, inclusive design and AI literacy).
+        controls: [GOV-01]
+        weight: 1
+      - {ref: Art. 96, title: Guidelines from the Commission on the implementation of this Regulation, kind: info, note: "Track Commission guidelines on definitions, prohibited practices and high-risk classification."}
+
+  - chapter: Chapter XI - Delegation of power and committee procedure
+    items:
+      - {ref: Art. 97, title: Exercise of the delegation, kind: info}
+      - {ref: Art. 98, title: Committee procedure, kind: info}
+
+  - chapter: Chapter XII - Penalties
+    items:
+      - {ref: Art. 99, title: Penalties, kind: info, note: "Fines up to EUR 35m or 7% of worldwide turnover for prohibited practices, EUR 15m or 3% for most other obligations, EUR 7.5m or 1% for supplying incorrect information."}
+      - {ref: Art. 100, title: "Administrative fines on Union institutions, bodies, offices and agencies", kind: info}
+      - {ref: Art. 101, title: Fines for providers of general-purpose AI models, kind: info}
+
+  - chapter: Chapter XIII - Final provisions
+    items:
+      - {ref: Art. 102, title: Amendment to Regulation (EC) No 300/2008, kind: info}
+      - {ref: Art. 103, title: Amendment to Regulation (EU) No 167/2013, kind: info}
+      - {ref: Art. 104, title: Amendment to Regulation (EU) No 168/2013, kind: info}
+      - {ref: Art. 105, title: Amendment to Directive 2014/90/EU, kind: info}
+      - {ref: Art. 106, title: Amendment to Directive (EU) 2016/797, kind: info}
+      - {ref: Art. 107, title: Amendment to Regulation (EU) 2018/858, kind: info}
+      - {ref: Art. 108, title: Amendments to Regulation (EU) 2018/1139, kind: info}
+      - {ref: Art. 109, title: Amendment to Regulation (EU) 2019/2144, kind: info}
+      - {ref: Art. 110, title: Amendment to Directive (EU) 2020/1828, kind: info}
+      - ref: Art. 111
+        title: AI systems already placed on the market or put into service and general-purpose AI models already placed on the market
+        when: [provider, deployer]
+        summary: The entity has identified AI systems and GPAI models placed on the market or put into service before the application dates, and the transitional deadlines and significant-change triggers that apply to them.
+        controls: [GOV-04, GOV-03]
+        weight: 1
+      - {ref: Art. 112, title: Evaluation and review, kind: info}
+      - {ref: Art. 113, title: Entry into force and application, kind: info, note: "Staged application from 2 February 2025 (Chapters I-II), 2 August 2025 (GPAI, governance, penalties) and 2 August 2026 / 2027 for most remaining provisions. Amendments to these dates have been proposed; confirm the dates currently in force."}
+
+  - chapter: Annexes
+    items:
+      - {ref: Annex I, title: List of Union harmonisation legislation, kind: info}
+      - {ref: Annex II, title: List of criminal offences referred to in Article 5(1)(h)(iii), kind: info}
+      - {ref: Annex III, title: High-risk AI systems referred to in Article 6(2), kind: info, note: "Biometrics; critical infrastructure; education; employment; access to essential private and public services (incl. credit scoring, life and health insurance); law enforcement; migration and border control; administration of justice and democratic processes."}
+      - {ref: Annex IV, title: Technical documentation referred to in Article 11(1), kind: info}
+      - {ref: Annex V, title: EU declaration of conformity, kind: info}
+      - {ref: Annex VI, title: Conformity assessment procedure based on internal control, kind: info}
+      - {ref: Annex VII, title: Conformity based on an assessment of the quality management system and an assessment of the technical documentation, kind: info}
+      - {ref: Annex VIII, title: Information to be submitted upon the registration of high-risk AI systems in accordance with Article 49, kind: info}
+      - {ref: Annex IX, title: Information to be submitted upon the registration of high-risk AI systems listed in Annex III in relation to testing in real world conditions, kind: info}
+      - {ref: Annex X, title: "Union legislative acts on large-scale IT systems in the area of Freedom, Security and Justice", kind: info}
+      - {ref: Annex XI, title: Technical documentation referred to in Article 53(1)(a) for providers of general-purpose AI models, kind: info}
+      - {ref: Annex XII, title: Transparency information referred to in Article 53(1)(b) for downstream providers, kind: info}
+      - {ref: Annex XIII, title: Criteria for the designation of general-purpose AI models with systemic risk referred to in Article 51, kind: info}

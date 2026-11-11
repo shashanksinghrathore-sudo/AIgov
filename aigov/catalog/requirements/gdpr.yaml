@@ -1,0 +1,331 @@
+# General Data Protection Regulation - Regulation (EU) 2016/679. All 99 articles are listed.
+# Summaries are paraphrased and focus on how each obligation applies to AI processing.
+
+framework: gdpr
+prefix: GDPR
+sections:
+  - chapter: Chapter I - General provisions
+    items:
+      - {ref: Art. 1, title: Subject-matter and objectives, kind: info}
+      - {ref: Art. 2, title: Material scope, kind: info}
+      - {ref: Art. 3, title: Territorial scope, kind: info, note: "Applies to EU establishments and to non-EU controllers offering goods or services to, or monitoring, people in the EU."}
+      - {ref: Art. 4, title: Definitions, kind: info}
+
+  - chapter: Chapter II - Principles
+    items:
+      - ref: Art. 5
+        title: Principles relating to processing of personal data
+        summary: Personal data used by AI systems is processed lawfully, fairly and transparently, for specified purposes, minimised, accurate, kept no longer than necessary, secured, and the controller can demonstrate compliance (accountability).
+        tests:
+          - Are the purposes of each AI processing activity (training, fine-tuning, inference, monitoring) specified, and is further use checked for compatibility?
+          - Is data minimised for training and inference, with retention periods set and enforced?
+          - Are steps taken to keep personal data, including AI-generated inferences about people, accurate?
+          - Can the controller demonstrate compliance with each principle (accountability documentation)?
+        controls: [DAT-03, DAT-01, GOV-01]
+        weight: 3
+      - ref: Art. 6
+        title: Lawfulness of processing
+        summary: Each AI processing purpose rests on a valid lawful basis, documented before processing starts.
+        tests:
+          - Is a lawful basis identified and recorded for each AI processing purpose?
+          - Where legitimate interests is relied on (for example for model training), is a documented balancing test in place?
+          - Where data is reused for a new purpose, is the Art. 6(4) compatibility assessment documented?
+        controls: [DAT-03]
+        weight: 3
+      - ref: Art. 7
+        title: Conditions for consent
+        summary: Where consent is relied on, the controller can demonstrate it, the request is distinguishable and plain, consent is freely given, and withdrawal is as easy as giving it.
+        controls: [DAT-03]
+        weight: 2
+      - ref: Art. 8
+        title: Conditions applicable to child's consent in relation to information society services
+        need: [children_data]
+        summary: For online services offered directly to children below the national age of digital consent (16, or as low as 13), consent is given or authorised by the holder of parental responsibility, with reasonable verification efforts.
+        controls: [DAT-03]
+        weight: 2
+      - ref: Art. 9
+        title: Processing of special categories of personal data
+        need: [special_category_data]
+        summary: Special-category data (including biometric data for identification and health data, whether collected or inferred) is processed only under an Art. 9(2) condition, with appropriate safeguards.
+        tests:
+          - Is an Art. 9(2) condition identified and documented for each AI processing of special-category data, including inferred data?
+          - Are additional safeguards (access restrictions, pseudonymisation, purpose separation) applied?
+        controls: [DAT-03, DAT-02]
+        weight: 3
+      - ref: Art. 10
+        title: Processing of personal data relating to criminal convictions and offences
+        need: [criminal_data]
+        summary: Criminal-offence data is processed only under official authority or where authorised by Union or Member State law providing appropriate safeguards.
+        controls: [DAT-03]
+        weight: 2
+      - {ref: Art. 11, title: Processing which does not require identification, kind: info}
+
+  - chapter: Chapter III - Rights of the data subject
+    items:
+      - ref: Art. 12
+        title: Transparent information, communication and modalities for the exercise of the rights of the data subject
+        summary: Information and communications are concise, transparent, intelligible and in plain language; rights requests are answered without undue delay and within one month (extendable by two months), free of charge, with identity verified.
+        controls: [DAT-04, TRN-02]
+        weight: 2
+      - ref: Art. 13
+        title: Information to be provided where personal data are collected from the data subject
+        summary: At collection, people receive a privacy notice covering purposes and lawful basis, recipients, retention, rights and transfers, and - for automated decision-making including profiling - meaningful information about the logic involved and the significance and envisaged consequences.
+        tests:
+          - Do privacy notices describe each AI processing purpose, lawful basis, recipients, retention and rights?
+          - Where automated decision-making or profiling occurs, do notices explain the logic involved and its significance and consequences?
+        controls: [DAT-03, TRN-03]
+        weight: 2
+      - ref: Art. 14
+        title: Information to be provided where personal data have not been obtained from the data subject
+        summary: Where personal data is obtained indirectly (for example third-party or publicly scraped training data), people are informed within a reasonable period (at most one month), including the source; or the disproportionate-effort exemption is assessed and documented with protective measures such as public information.
+        controls: [DAT-01, DAT-03]
+        weight: 2
+      - ref: Art. 15
+        title: Right of access by the data subject
+        summary: People can obtain confirmation of processing, a copy of their data, and information on purposes, recipients, retention, source, and the existence and logic of automated decision-making.
+        controls: [DAT-04]
+        weight: 2
+      - ref: Art. 16
+        title: Right to rectification
+        summary: Inaccurate personal data, including in AI-derived profiles and outputs, can be rectified without undue delay and incomplete data completed.
+        controls: [DAT-04]
+        weight: 2
+      - ref: Art. 17
+        title: Right to erasure ('right to be forgotten')
+        summary: Erasure requests are handled where grounds apply, with a documented approach for personal data in training data sets and derived models.
+        controls: [DAT-04]
+        weight: 2
+      - ref: Art. 18
+        title: Right to restriction of processing
+        summary: Processing can be restricted (for example while accuracy is contested), and restricted data is marked and not used for AI processing.
+        controls: [DAT-04]
+        weight: 1
+      - ref: Art. 19
+        title: Notification obligation regarding rectification or erasure of personal data or restriction of processing
+        summary: Rectification, erasure or restriction is communicated to each recipient of the data unless impossible or disproportionate.
+        controls: [DAT-04, TPR-01]
+        weight: 1
+      - ref: Art. 20
+        title: Right to data portability
+        summary: Where processing is automated and based on consent or contract, people can receive their data in a structured, commonly used, machine-readable format and transmit it to another controller.
+        controls: [DAT-04]
+        weight: 1
+      - ref: Art. 21
+        title: Right to object
+        summary: People can object to processing based on legitimate interests or public task (including profiling), processing stops unless compelling grounds are shown, objection to direct marketing is absolute, and the right is presented at the first communication.
+        controls: [DAT-04]
+        weight: 2
+      - ref: Art. 22
+        title: Automated individual decision-making, including profiling
+        when: [automated_decisions, consequential_decisions]
+        summary: Decisions based solely on automated processing that produce legal or similarly significant effects are made only under an Art. 22(2) exception, with safeguards including human intervention, the right to express a view and to contest the decision.
+        tests:
+          - Has the entity identified every decision based solely on automated processing with legal or similarly significant effects?
+          - Does each such decision rely on an Art. 22(2) exception (contract necessity, authorised by law, or explicit consent)?
+          - Can people obtain human intervention, express their point of view and contest the decision?
+          - Is special-category data excluded unless Art. 9(2)(a) or (g) applies with safeguards?
+        controls: [HUM-02, TRN-03, DAT-04]
+        weight: 3
+      - {ref: Art. 23, title: Restrictions, kind: info, note: Member State law may restrict certain rights.}
+
+  - chapter: Chapter IV - Controller and processor
+    items:
+      - ref: Art. 24
+        title: Responsibility of the controller
+        summary: The controller implements appropriate technical and organisational measures, including data protection policies, to ensure and demonstrate compliance, and reviews them.
+        controls: [GOV-01, GOV-02]
+        weight: 2
+      - ref: Art. 25
+        title: Data protection by design and by default
+        summary: Data protection principles are built into the design of AI systems (for example pseudonymisation, minimisation, access limits), and by default only data necessary for each purpose is processed.
+        controls: [DAT-03, DEV-05]
+        weight: 3
+      - ref: Art. 26
+        title: Joint controllers
+        summary: Where the entity jointly determines purposes and means with another party (for example an AI partner), a transparent arrangement allocates responsibilities, and its essence is available to data subjects.
+        controls: [TPR-01]
+        weight: 1
+      - ref: Art. 27
+        title: Representatives of controllers or processors not established in the Union
+        need: [non_eu_established]
+        summary: A controller or processor outside the EU that is subject to the GDPR designates in writing a representative in the EU.
+        controls: [GOV-02]
+        weight: 2
+      - ref: Art. 28
+        title: Processor
+        summary: Only processors providing sufficient guarantees are used, under a contract containing the Art. 28(3) terms - instructions, confidentiality, security, sub-processor approval, assistance, deletion or return, and audits - including limits on vendors reusing data to train their own models.
+        tests:
+          - Are AI and cloud vendors processing personal data covered by contracts with the Art. 28(3) terms?
+          - Do contracts restrict the vendor from using the entity's data to train or improve its own models unless agreed?
+        controls: [TPR-01]
+        weight: 3
+      - ref: Art. 29
+        title: Processing under the authority of the controller or processor
+        summary: Staff and processors process personal data only on the controller's instructions.
+        controls: [GOV-02]
+        weight: 1
+      - ref: Art. 30
+        title: Records of processing activities
+        summary: The record of processing activities includes AI processing - purposes, categories of data and data subjects, recipients, transfers, retention and security measures.
+        controls: [GOV-03]
+        weight: 2
+      - ref: Art. 31
+        title: Cooperation with the supervisory authority
+        summary: The controller and processor cooperate with the supervisory authority on request.
+        controls: [GOV-04]
+        weight: 1
+      - ref: Art. 32
+        title: Security of processing
+        summary: Security measures appropriate to the risk protect AI processing - pseudonymisation and encryption, confidentiality, integrity, availability and resilience, restoration, and regular testing - including against AI-specific threats such as model inversion, membership inference and data leakage.
+        controls: [DEV-04]
+        weight: 3
+      - ref: Art. 33
+        title: Notification of a personal data breach to the supervisory authority
+        summary: Personal data breaches are notified to the supervisory authority without undue delay and where feasible within 72 hours, unless unlikely to result in a risk, and every breach is documented.
+        controls: [OPS-03]
+        weight: 3
+      - ref: Art. 34
+        title: Communication of a personal data breach to the data subject
+        summary: Where a breach is likely to result in a high risk, affected people are told without undue delay in clear and plain language.
+        controls: [OPS-03]
+        weight: 2
+      - ref: Art. 35
+        title: Data protection impact assessment
+        when: [high_risk, automated_decisions, special_category_data, large_scale_processing, employment, consequential_decisions]
+        summary: A DPIA is carried out before processing likely to result in high risk - including systematic and extensive evaluation of people by automated means, large-scale special-category processing and systematic monitoring - and reviewed when the risk changes.
+        tests:
+          - Has a DPIA been completed before go-live for each AI processing likely to result in high risk?
+          - Does it contain a description of processing, necessity and proportionality, risks to rights and freedoms, and mitigating measures?
+          - Was the DPO's advice sought, and is the DPIA reviewed when the processing or risk changes?
+        controls: [RSK-03]
+        weight: 3
+      - ref: Art. 36
+        title: Prior consultation
+        when: [high_risk, automated_decisions, special_category_data, large_scale_processing]
+        summary: Where a DPIA shows high residual risk that cannot be mitigated, the supervisory authority is consulted before processing.
+        controls: [RSK-03, GOV-04]
+        weight: 2
+      - ref: Art. 37
+        title: Designation of the data protection officer
+        when: [public_body, large_scale_processing, special_category_data]
+        summary: A DPO is designated where required (public authority, core activities of large-scale systematic monitoring or large-scale special-category processing), and their contact details are published and communicated to the supervisory authority.
+        controls: [GOV-02]
+        weight: 2
+      - ref: Art. 38
+        title: Position of the data protection officer
+        when: [public_body, large_scale_processing, special_category_data]
+        summary: The DPO is involved properly and in a timely manner in all data protection issues, including AI projects, is resourced, independent, and reports to the highest management level.
+        controls: [GOV-02]
+        weight: 2
+      - ref: Art. 39
+        title: Tasks of the data protection officer
+        when: [public_body, large_scale_processing, special_category_data]
+        summary: The DPO informs and advises, monitors compliance, advises on DPIAs and cooperates with the supervisory authority.
+        controls: [GOV-02, GOV-06]
+        weight: 1
+      - {ref: Art. 40, title: Codes of conduct, kind: info}
+      - {ref: Art. 41, title: Monitoring of approved codes of conduct, kind: info}
+      - {ref: Art. 42, title: Certification, kind: info}
+      - {ref: Art. 43, title: Certification bodies, kind: info}
+
+  - chapter: Chapter V - Transfers of personal data to third countries or international organisations
+    items:
+      - ref: Art. 44
+        title: General principle for transfers
+        need: [international_transfers]
+        summary: Transfers of personal data outside the EEA (including to AI and cloud vendors) take place only under the conditions of Chapter V, and are inventoried.
+        controls: [TPR-01]
+        weight: 3
+      - ref: Art. 45
+        title: Transfers on the basis of an adequacy decision
+        need: [international_transfers]
+        summary: Where a transfer relies on an adequacy decision, the recipient country or framework (for example the EU-US Data Privacy Framework certification) is confirmed and monitored.
+        controls: [TPR-01]
+        weight: 1
+      - ref: Art. 46
+        title: Transfers subject to appropriate safeguards
+        need: [international_transfers]
+        summary: Transfers without adequacy use appropriate safeguards such as standard contractual clauses, supported by a transfer impact assessment and supplementary measures where needed.
+        controls: [TPR-01]
+        weight: 2
+      - {ref: Art. 47, title: Binding corporate rules, kind: info}
+      - {ref: Art. 48, title: Transfers or disclosures not authorised by Union law, kind: info}
+      - ref: Art. 49
+        title: Derogations for specific situations
+        need: [international_transfers]
+        summary: Art. 49 derogations are used only for occasional, non-repetitive transfers and are documented.
+        controls: [TPR-01]
+        weight: 1
+      - {ref: Art. 50, title: International cooperation for the protection of personal data, kind: info}
+
+  - chapter: Chapter VI - Independent supervisory authorities
+    items:
+      - {ref: Art. 51, title: Supervisory authority, kind: info}
+      - {ref: Art. 52, title: Independence, kind: info}
+      - {ref: Art. 53, title: General conditions for the members of the supervisory authority, kind: info}
+      - {ref: Art. 54, title: Rules on the establishment of the supervisory authority, kind: info}
+      - {ref: Art. 55, title: Competence, kind: info}
+      - {ref: Art. 56, title: Competence of the lead supervisory authority, kind: info, note: Identify your lead supervisory authority if you process across borders.}
+      - {ref: Art. 57, title: Tasks, kind: info}
+      - {ref: Art. 58, title: Powers, kind: info}
+      - {ref: Art. 59, title: Activity reports, kind: info}
+
+  - chapter: Chapter VII - Cooperation and consistency
+    items:
+      - {ref: Art. 60, title: Cooperation between the lead supervisory authority and the other supervisory authorities concerned, kind: info}
+      - {ref: Art. 61, title: Mutual assistance, kind: info}
+      - {ref: Art. 62, title: Joint operations of supervisory authorities, kind: info}
+      - {ref: Art. 63, title: Consistency mechanism, kind: info}
+      - {ref: Art. 64, title: Opinion of the Board, kind: info}
+      - {ref: Art. 65, title: Dispute resolution by the Board, kind: info}
+      - {ref: Art. 66, title: Urgency procedure, kind: info}
+      - {ref: Art. 67, title: Exchange of information, kind: info}
+      - {ref: Art. 68, title: European Data Protection Board, kind: info}
+      - {ref: Art. 69, title: Independence, kind: info}
+      - {ref: Art. 70, title: Tasks of the Board, kind: info, note: EDPB opinions and guidelines on AI models are relevant interpretation.}
+      - {ref: Art. 71, title: Reports, kind: info}
+      - {ref: Art. 72, title: Procedure, kind: info}
+      - {ref: Art. 73, title: Chair, kind: info}
+      - {ref: Art. 74, title: Tasks of the Chair, kind: info}
+      - {ref: Art. 75, title: Secretariat, kind: info}
+      - {ref: Art. 76, title: Confidentiality, kind: info}
+
+  - chapter: Chapter VIII - Remedies, liability and penalties
+    items:
+      - {ref: Art. 77, title: Right to lodge a complaint with a supervisory authority, kind: info}
+      - {ref: Art. 78, title: Right to an effective judicial remedy against a supervisory authority, kind: info}
+      - {ref: Art. 79, title: Right to an effective judicial remedy against a controller or processor, kind: info}
+      - {ref: Art. 80, title: Representation of data subjects, kind: info}
+      - {ref: Art. 81, title: Suspension of proceedings, kind: info}
+      - {ref: Art. 82, title: Right to compensation and liability, kind: info}
+      - {ref: Art. 83, title: General conditions for imposing administrative fines, kind: info, note: "Up to EUR 20m or 4% of worldwide annual turnover for infringements of principles, lawful basis, rights and transfers."}
+      - {ref: Art. 84, title: Penalties, kind: info}
+
+  - chapter: Chapter IX - Provisions relating to specific processing situations
+    items:
+      - {ref: Art. 85, title: Processing and freedom of expression and information, kind: info}
+      - {ref: Art. 86, title: Processing and public access to official documents, kind: info}
+      - {ref: Art. 87, title: Processing of the national identification number, kind: info}
+      - ref: Art. 88
+        title: Processing in the context of employment
+        need: [employment]
+        summary: AI processing of employee and candidate data complies with national employment data protection rules and collective agreements, including safeguards for human dignity and monitoring at work.
+        controls: [DAT-03, TRN-04]
+        weight: 2
+      - {ref: Art. 89, title: "Safeguards and derogations relating to processing for archiving purposes in the public interest, scientific or historical research purposes or statistical purposes", kind: info}
+      - {ref: Art. 90, title: Obligations of secrecy, kind: info}
+      - {ref: Art. 91, title: Existing data protection rules of churches and religious associations, kind: info}
+
+  - chapter: Chapter X - Delegated acts and implementing acts
+    items:
+      - {ref: Art. 92, title: Exercise of the delegation, kind: info}
+      - {ref: Art. 93, title: Committee procedure, kind: info}
+
+  - chapter: Chapter XI - Final provisions
+    items:
+      - {ref: Art. 94, title: Repeal of Directive 95/46/EC, kind: info}
+      - {ref: Art. 95, title: Relationship with Directive 2002/58/EC, kind: info}
+      - {ref: Art. 96, title: Relationship with previously concluded Agreements, kind: info}
+      - {ref: Art. 97, title: Commission reports, kind: info}
+      - {ref: Art. 98, title: Review of other Union legal acts on data protection, kind: info}
+      - {ref: Art. 99, title: Entry into force and application, kind: info}

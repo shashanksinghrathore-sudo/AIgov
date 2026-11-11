@@ -1,0 +1,96 @@
+# US state and city AI laws. Several files may share one YAML; each block names its framework.
+# Colorado SB 24-205 effective date and text have been amended since enactment; verify current law.
+
+frameworks:
+  - framework: colorado_ai_act
+    prefix: COAI
+    sections:
+      - chapter: Part 17 - Consumer protections for artificial intelligence
+        items:
+          - {ref: 6-1-1701, title: Definitions, kind: info, note: "Key terms: high-risk AI system, consequential decision, algorithmic discrimination, developer, deployer, intentional and substantial modification."}
+          - ref: 6-1-1702
+            title: Developer duty to avoid algorithmic discrimination - required documentation
+            need: [provider]
+            summary: Developers of high-risk AI systems use reasonable care to protect consumers from known or reasonably foreseeable risks of algorithmic discrimination and give deployers the documentation they need.
+            tests:
+              - Do deployers receive a general statement of foreseeable uses and known harmful uses, a summary of training data, known limitations, purpose and intended benefits?
+              - Do deployers receive documentation of how the system was evaluated for performance and algorithmic discrimination, data governance measures, mitigation measures, and how it should be used and monitored?
+              - Is a public statement on the website summarising the high-risk systems developed and how algorithmic discrimination risks are managed, kept current?
+              - Are known or reasonably foreseeable risks of algorithmic discrimination disclosed to the Attorney General and known deployers within 90 days of discovery?
+            controls: [DEV-01, DEV-03, TRN-02, OPS-03]
+            weight: 3
+          - ref: 6-1-1703
+            title: Deployer duty to avoid algorithmic discrimination - risk management policy and program
+            need: [deployer]
+            summary: Deployers of high-risk AI systems use reasonable care to protect consumers from algorithmic discrimination through a risk management programme, impact assessments, notices, appeal rights and public disclosure.
+            tests:
+              - Is there a risk management policy and programme for high-risk systems, reasonable in light of a recognised framework such as NIST AI RMF or ISO/IEC 42001?
+              - Is an impact assessment completed for each high-risk system, annually and within 90 days of any intentional and substantial modification?
+              - Is each deployed high-risk system reviewed at least annually to ensure it is not causing algorithmic discrimination?
+              - Are consumers notified before a consequential decision that a high-risk system is used, with its purpose and nature of the decision?
+              - For adverse decisions, do consumers receive the principal reasons, an opportunity to correct incorrect personal data, and an opportunity to appeal with human review where technically feasible?
+              - Is a public website statement maintained on the types of high-risk systems deployed, risk management, and the information collected and used?
+              - Is discovered algorithmic discrimination disclosed to the Attorney General within 90 days?
+            controls: [RSK-02, RSK-03, TRN-04, HUM-02, TRN-03, OPS-03]
+            weight: 3
+          - ref: 6-1-1704
+            title: Disclosure of an artificial intelligence system to consumer
+            when: [consumer_facing, generative]
+            summary: An AI system intended to interact with consumers discloses to each consumer that they are interacting with an AI system, unless it would be obvious to a reasonable person.
+            controls: [TRN-01]
+            weight: 2
+          - {ref: 6-1-1705, title: Compliance with other legal obligations, kind: info, note: Sets out exceptions and interaction with other laws.}
+          - ref: 6-1-1706
+            title: Enforcement by attorney general
+            when: [provider, deployer]
+            binding: false
+            summary: To support the affirmative defence, the entity discovers and cures violations (through feedback, adversarial testing or internal review) and complies with a recognised AI risk management framework.
+            controls: [GOV-06, RSK-02]
+            weight: 1
+          - {ref: 6-1-1707, title: Rules, kind: info, note: Attorney General rule-making.}
+
+  - framework: nyc_ll144
+    prefix: NYCLL144
+    sections:
+      - chapter: NYC Administrative Code, Title 20, Subchapter 25 - Automated employment decision tools
+        items:
+          - {ref: 20-870, title: Definitions, kind: info, note: An AEDT substantially assists or replaces discretionary decision-making for hiring or promotion.}
+          - ref: 20-871(a)
+            title: Bias audit before use and published summary
+            summary: An automated employment decision tool is not used unless it has had a bias audit by an independent auditor no more than one year before use, and a summary of the most recent audit results and the tool's distribution date is published on the employer's website.
+            tests:
+              - Has each AEDT been bias-audited by an independent auditor within the past year?
+              - Is a summary of the most recent audit and the distribution date publicly available on the website before use?
+            controls: [DEV-03, TRN-04]
+            weight: 3
+          - ref: 20-871(b)
+            title: Notices to employees and candidates
+            summary: Candidates and employees who reside in New York City are notified at least 10 business days before use that an AEDT will be used, of the job qualifications and characteristics it assesses, and that they may request an alternative selection process or accommodation; information on data type, source and retention is made available.
+            controls: [TRN-04, HUM-02]
+            weight: 3
+          - {ref: 20-872, title: Penalties, kind: info, note: "USD 500 for a first violation and USD 500-1,500 for each subsequent violation; each day of use is a separate violation."}
+          - {ref: 20-873, title: Enforcement, kind: info}
+          - {ref: 20-874, title: Construction, kind: info}
+      - chapter: Rules of the City of New York, Title 6, Chapter 5, Subchapter T
+        items:
+          - {ref: 6 RCNY 5-300, title: Definitions, kind: info}
+          - ref: 6 RCNY 5-301
+            title: Bias audit
+            summary: The bias audit calculates selection rates (or scoring rates) and impact ratios for sex, race/ethnicity and intersectional categories, and reports the number of individuals in unknown categories.
+            controls: [DEV-03]
+            weight: 3
+          - ref: 6 RCNY 5-302
+            title: Data requirements
+            summary: The bias audit uses historical data of the AEDT, or test data where historical data is insufficient, with an explanation of why test data was used and how it was generated.
+            controls: [DAT-01, DEV-03]
+            weight: 2
+          - ref: 6 RCNY 5-303
+            title: Published results
+            summary: The published summary includes the audit date, data source and explanation, number of individuals assessed and in unknown categories, selection or scoring rates and impact ratios for all categories, and the distribution date, and stays posted for at least six months after last use.
+            controls: [TRN-04]
+            weight: 2
+          - ref: 6 RCNY 5-304
+            title: Notice to candidates and employees
+            summary: Notice is given through the website, job posting, mail or email as permitted by the rules, with instructions for requesting an alternative selection process or reasonable accommodation.
+            controls: [TRN-04]
+            weight: 2

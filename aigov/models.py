@@ -1,14 +1,15 @@
-"""Data models shared by connectors, the assessment engine and reports."""
+"""Data models shared by the rule library, connectors, the test engine, reports and the web platform."""
 from __future__ import annotations
 
 from datetime import datetime, timezone
 from typing import Any, Literal, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 Status = Literal["met", "partial", "gap", "not_applicable"]
 RiskTier = Literal["prohibited", "high", "limited", "minimal"]
 Priority = Literal["critical", "high", "medium", "low"]
+AnswerValue = Literal["yes", "partial", "no", "na"]
 
 
 # --------------------------------------------------------------------------- profile
@@ -24,11 +25,10 @@ class AISystem(BaseModel):
     model: str = ""
     uses_personal_data: bool = False
     generative: bool = False
-    gpai_model_provider: bool = False     # the entity itself provides a general-purpose AI model
+    gpai_model_provider: bool = False     # the entity provides a general-purpose AI model
     consumer_facing: bool = False
     automated_decisions: bool = False     # decisions without meaningful human involvement
-    risk_tier: Optional[RiskTier] = None  # declared tier; classified automatically when absent
-    # filled in by the engine
+    risk_tier: Optional[RiskTier] = None  # declared tier; screened automatically as well
     assessed_risk_tier: Optional[RiskTier] = None
     risk_rationale: str = ""
 
@@ -38,6 +38,7 @@ class Entity(BaseModel):
     sector: str = ""
     jurisdictions: list[str] = Field(default_factory=list)  # EU, US, US-CO, US-NY, IN, UK ...
     size: str = ""
+    attributes: list[str] = Field(default_factory=list)     # entity-level applicability flags
 
 
 class Profile(BaseModel):
@@ -45,27 +46,26 @@ class Profile(BaseModel):
     systems: list[AISystem] = Field(default_factory=list)
 
 
-# --------------------------------------------------------------------------- evidence
+# --------------------------------------------------------------------------- evidence and answers
 class Evidence(BaseModel):
-    """One unit of evidence gathered by a connector."""
     id: str
     connector: str
     kind: Literal["document", "repository", "inventory", "attestation", "api"]
     title: str
-    ref: str = ""                 # path / URL / record id
-    text: str = ""                # content assessors can read and quote
-    signals: dict[str, Any] = Field(default_factory=dict)  # machine-detected facts
+    ref: str = ""
+    text: str = ""
+    signals: dict[str, Any] = Field(default_factory=dict)
 
 
-class Attestation(BaseModel):
-    """Self-assessment answer for one control."""
-    control_id: str
-    answer: Literal["yes", "partial", "no", "na"]
-    notes: str = ""
+class Answer(BaseModel):
+    """Answer to one test. `test_id` may also be a requirement id, which answers all its tests."""
+    test_id: str
+    answer: AnswerValue
+    note: str = ""
     evidence_ref: str = ""
 
 
-# --------------------------------------------------------------------------- catalog
+# --------------------------------------------------------------------------- rule library
 class Remediation(BaseModel):
     action: str
     effort: Literal["low", "medium", "high"] = "medium"
@@ -73,13 +73,13 @@ class Remediation(BaseModel):
 
 
 class Control(BaseModel):
+    """Best-practice control: evidence checks + default remediation, shared by many articles."""
     id: str
     domain: str
     title: str
     objective: str
     weight: int = 2
     conditions: list[str] = Field(default_factory=list)
-    mappings: dict[str, list[str]] = Field(default_factory=dict)
     indicators: list[list[str]] = Field(default_factory=list)
     signals: list[str] = Field(default_factory=list)
     remediation: Remediation
@@ -96,11 +96,38 @@ class Framework(BaseModel):
     note: str = ""
 
 
+class RuleTest(BaseModel):
+    id: str
+    question: str
+
+
+class Requirement(BaseModel):
+    """One article / section / clause of a law or standard."""
+    model_config = ConfigDict(extra="forbid")  # a YAML typo must fail loudly, not vanish
+    id: str
+    framework: str
+    ref: str
+    title: str
+    chapter: str = ""
+    kind: Literal["obligation", "info"] = "obligation"
+    summary: str = ""
+    note: str = ""
+    need: list[str] = Field(default_factory=list)   # all flags required
+    when: list[str] = Field(default_factory=list)   # at least one flag required
+    tests: list[RuleTest] = Field(default_factory=list)
+    controls: list[str] = Field(default_factory=list)
+    keywords: list[str] = Field(default_factory=list)  # extra evidence phrases (custom rules)
+    weight: int = 2
+    binding: Optional[bool] = None                  # overrides the framework's binding flag
+    action: str = ""                                # requirement-specific remediation
+    owner: str = ""
+    custom: bool = False
+
+
 # --------------------------------------------------------------------------- results
 class Citation(BaseModel):
-    source: str            # evidence id
+    source: str
     quote: str
-    verified: bool = True  # quote was found verbatim in the evidence text
 
 
 class Recommendation(BaseModel):
@@ -108,23 +135,37 @@ class Recommendation(BaseModel):
     priority: Priority = "medium"
     effort: Literal["low", "medium", "high"] = "medium"
     owner: str = ""
+    control_id: str = ""
 
 
-class ControlResult(BaseModel):
-    control_id: str
-    domain: str
+class TestResult(BaseModel):
+    test_id: str
+    question: str
+    answer: Optional[AnswerValue] = None
+    score: Optional[float] = None
+    basis: Literal["verified", "attested", "partial", "failed", "not_applicable", "evidence", "no_evidence"] = "no_evidence"
+    note: str = ""
+    evidence_ref: str = ""
+
+
+class RequirementResult(BaseModel):
+    id: str
+    framework: str
+    ref: str
     title: str
+    chapter: str = ""
+    domain: str = ""
     status: Status
-    score: float = 0.0                       # 0..1
+    score: float = 0.0
     confidence: Literal["low", "medium", "high"] = "low"
-    method: Literal["ai", "rules"] = "rules"
     rationale: str = ""
+    tests: list[TestResult] = Field(default_factory=list)
     gaps: list[str] = Field(default_factory=list)
     citations: list[Citation] = Field(default_factory=list)
     recommendations: list[Recommendation] = Field(default_factory=list)
-    frameworks: dict[str, list[str]] = Field(default_factory=dict)  # applicable mappings only
+    controls: list[str] = Field(default_factory=list)
     legally_binding: bool = False
-    priority: Optional[Priority] = None      # set for partial / gap
+    priority: Optional[Priority] = None
     weight: int = 2
 
 
@@ -136,32 +177,35 @@ class FrameworkScore(BaseModel):
     applicable: bool
     reason: str = ""
     note: str = ""
-    score: Optional[float] = None            # 0..100
-    controls_total: int = 0
-    controls_met: int = 0
-    controls_partial: int = 0
-    controls_gap: int = 0
+    score: Optional[float] = None
+    articles_total: int = 0        # every article/section in the library
+    articles_assessable: int = 0   # articles that carry obligations
+    in_scope: int = 0
+    met: int = 0
+    partial: int = 0
+    gap: int = 0
 
 
 class Assessment(BaseModel):
     id: str
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat(timespec="seconds"))
     tool_version: str = ""
-    mode: Literal["ai", "rules"] = "rules"
-    model: str = ""
+    method: str = "rule-based"
     profile: Profile
     flags: list[str] = Field(default_factory=list)
-    overall_score: float = 0.0               # 0..100
+    overall_score: float = 0.0
     maturity: str = ""
     frameworks: list[FrameworkScore] = Field(default_factory=list)
     domains: dict[str, float] = Field(default_factory=dict)
-    results: list[ControlResult] = Field(default_factory=list)
+    results: list[RequirementResult] = Field(default_factory=list)
+    tests_total: int = 0
+    tests_answered: int = 0
     executive_summary: str = ""
     roadmap: list[dict[str, Any]] = Field(default_factory=list)
     evidence_index: list[dict[str, str]] = Field(default_factory=list)
     warnings: list[str] = Field(default_factory=list)
 
-    def gaps(self) -> list[ControlResult]:
+    def gaps(self) -> list[RequirementResult]:
         order = {"critical": 0, "high": 1, "medium": 2, "low": 3}
         items = [r for r in self.results if r.status in ("gap", "partial")]
-        return sorted(items, key=lambda r: (order.get(r.priority or "low", 3), r.score, r.control_id))
+        return sorted(items, key=lambda r: (order.get(r.priority or "low", 3), r.score, r.framework, r.id))

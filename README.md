@@ -1,117 +1,94 @@
-# aigov
+# AI Compliance Platform (aigov)
 
-Measures an organisation's AI governance against laws and recognised standards, finds the gaps, and recommends what to fix first.
+A self-hosted web platform that tests an organisation's AI governance against AI laws and recognised best practice, article by article, finds the gaps, and recommends what to fix first.
 
-It plugs into systems you already run (policy folders, code repositories, model registries, GRC tools), gathers evidence, and assesses it against one control catalog that is mapped to every framework, so a single piece of evidence counts everywhere it is required.
+All testing is done by rules defined inside the platform. The server makes no outbound network calls and calls no AI or third-party API. The browser UI is locked to its own server by a Content-Security-Policy. Your data stays in a local SQLite file.
 
-> This is a governance diagnostic, not legal advice or a certification. Clause references help you find the source text; confirm applicability, current wording and effective dates with qualified counsel.
+> This is a governance diagnostic, not legal advice or a certification. Article summaries and test questions are paraphrased, not the official text. Confirm applicability, current wording and effective dates against the official sources and with qualified counsel.
 
 ## Quick start
 
 ```bash
-pip install -e ".[all]"
+pip install -e ".[docs]"
 ```
 
 ```bash
-aigov assess -c examples/acme/aigov.yaml --out examples/acme/out
+aigov demo
 ```
 
-Open `examples/acme/out/assessment.html`. The same run also writes `assessment.json` and `assessment.md`.
-
-With Anthropic credentials (`ANTHROPIC_API_KEY`), Claude reads the evidence and judges each control on substance. Without them the tool falls back to an offline rule-based check and says so in the report.
-
-## What it covers
-
-| Framework | Type | In scope when |
-|---|---|---|
-| EU AI Act (Regulation (EU) 2024/1689) | Binding law | Entity operates in the EU |
-| GDPR | Binding law | EU and personal data |
-| Colorado AI Act (SB 24-205) | Binding law | Colorado and consequential decisions |
-| NYC Local Law 144 | Binding law | New York and employment decisions |
-| India DPDP Act 2023 | Binding law | India and personal data |
-| NIST AI RMF 1.0 + Generative AI Profile | Voluntary | Always |
-| ISO/IEC 42001:2023 | Voluntary | Always |
-| OECD AI Principles | Voluntary | Always |
-
-33 controls across nine domains: governance, risk management, data governance, development and documentation, transparency, human oversight, operations and monitoring, third parties, and generative AI safeguards. List them with `aigov controls` or `aigov controls --framework eu_ai_act`.
-
-## How an assessment works
-
-1. **Scope.** Each AI system is screened into a risk tier (prohibited, high, limited, minimal). Jurisdictions and system traits decide which frameworks and controls apply. A declared tier lower than the screening result is flagged.
-2. **Collect.** Connectors pull evidence.
-3. **Evaluate.** Each control is rated met, partial or gap, with a 0-100 score, the quoted evidence relied on, and specific gaps.
-4. **Prioritise.** Priority = control weight x shortfall, raised when binding law requires the control.
-5. **Recommend.** Each gap gets actions with an owner and effort, sequenced into a 30/90/180-day roadmap.
-
-### Two evaluators
-
-| | AI-assisted (`--mode ai`) | Rule-based (`--mode rules`) |
-|---|---|---|
-| Method | Claude reads all evidence as an auditor would | Phrase coverage in documents, technical signals, attestations |
-| Judges | Whether the control is designed and operating | Whether the topic is addressed |
-| Recommendations | Tailored to the entity and its systems | Catalog defaults |
-| Needs | Anthropic credentials | Nothing; runs offline |
-
-Safeguards in AI mode: quotes are re-checked against the source text and marked unverified if not found; evidence that exceeds the size budget is reported as unread, never silently cut; evidence is treated as data, not instructions; a failed batch falls back to rules for those controls and is noted. The model defaults to `claude-opus-5-5` (override with `AIGOV_MODEL`).
-
-In rule-based mode an unsupported "yes" in the questionnaire scores as partial, and documents that describe a control as planned or not yet covering AI cannot score as met.
-
-## Plugging it in
-
-**Config file** (paths are relative to the file):
-
-```yaml
-entity: {name: Acme, sector: Finance, jurisdictions: [EU, US-CO, IN]}
-inventory: systems.csv            # or list `systems:` inline
-connectors:
-  - {type: documents, path: ./policies}                  # md, txt, pdf, docx, yaml, json
-  - {type: repo, path: ../ml-service}                    # static scan, never runs code
-  - {type: questionnaire, path: answers.yaml}            # template: aigov questionnaire
-  - {type: mlflow, url: https://mlflow.internal, token_env: MLFLOW_TOKEN}
-  - {type: http, url: https://grc.internal/api/risks, title: Risk register, token_env: GRC_TOKEN}
+```bash
+aigov serve
 ```
 
-| Connector | Pulls |
+Open http://127.0.0.1:8080. `aigov demo` loads a fictional lender with three AI systems, policy documents, a scanned code repository and some answers, so every page has data on it.
+
+With Docker (untested in this build environment):
+
+```bash
+docker build -t aigov . && docker run -p 8080:8080 -v aigov-data:/data aigov
+```
+
+## The rule library
+
+Every article or section of each regime is listed. Articles that create obligations for an organisation carry compliance tests. The rest (definitions, duties of authorities, amendments, penalties) are listed as reference only.
+
+| Framework | Type | Articles listed | With tests | Tests |
+|---|---|---|---|---|
+| EU AI Act, Regulation (EU) 2024/1689 (Art. 1-113 + Annexes I-XIII) | Binding law | 126 | 43 | 90 |
+| GDPR, Regulation (EU) 2016/679 (Art. 1-99) | Binding law | 99 | 38 | 51 |
+| India DPDP Act 2023 (s. 1-44) | Binding law | 44 | 12 | 21 |
+| Colorado AI Act, SB 24-205 (6-1-1701 to 1707) | Binding law | 7 | 4 | 13 |
+| NYC Local Law 144 + 6 RCNY 5-300 to 5-304 | Binding law | 11 | 6 | 7 |
+| NIST AI RMF 1.0 (all 72 subcategories) | Voluntary | 72 | 72 | 72 |
+| ISO/IEC 42001:2023 (clauses 4-10 + Annex A) | Voluntary | 65 | 65 | 65 |
+| OECD AI Principles | Voluntary | 10 | 5 | 5 |
+| **Total** | | **434** | **245** | **324** |
+
+Each article that carries tests also links to a best-practice control in `aigov/catalog/controls.yaml` (33 controls such as AI inventory, risk management, bias testing and incident response). The control supplies the evidence checks and the default fix. One fix can close many articles: an incident-response procedure, for example, closes EU AI Act Art. 73, GDPR Art. 33-34, DPDP s. 8, NIST MANAGE 4.3 and ISO 42001 A.8.4.
+
+You can add your own rules on the **Rule library** page: national laws, sector rules, internal policies or contract terms. Each custom rule has its own tests, applicability conditions, evidence keywords and remediation. Built-in rules are read-only. To change one permanently, edit the YAML under `aigov/catalog/requirements/`.
+
+## How a test run works
+
+1. **Profile and scope.** Record jurisdictions, entity characteristics and AI systems. Each system is screened for prohibited and high-risk use. Frameworks and articles apply only when their conditions hold. For example, EU AI Act Art. 9 applies to providers of high-risk systems, and Art. 27 applies to deployers that are public bodies or score credit or insurance.
+2. **Evidence.** Upload policies and records (md, txt, pdf, docx, json, yaml, csv), paste text, or upload a `.zip` of a code repository. Repositories are scanned statically and never executed. The scan looks for ML and LLM libraries, model cards, datasheets, tests, CI, fairness, explainability, monitoring and guardrail tooling, and hard-coded secrets.
+3. **Compliance tests.** Answer each test Yes, Partial, No or N/A, with an optional note and linked evidence. Each article shows what the evidence checks found, including quotes and any caveats such as "not yet covered".
+4. **Results.** You get scores per framework, domain and article; gaps ranked critical to low; a 30/90/180-day roadmap; and downloadable reports (HTML, CSV test log, JSON, Markdown). Every run is kept so you can compare over time.
+
+**Scoring rules**
+
+| Test outcome | Score |
 |---|---|
-| `documents` | Policies, procedures, assessments from a folder |
-| `repo` | ML/LLM libraries, model cards, datasheets, tests, CI, fairness, explainability, monitoring and guardrail tooling, hard-coded secrets |
-| `inventory` | The AI system register and its completeness |
-| `questionnaire` | Management self-assessment per control |
-| `mlflow` | Registered models and whether each has an owner, description and risk tier |
-| `http` | Any JSON or text endpoint (GRC, ticketing, wiki) |
+| Yes, with linked evidence or evidence the checks found | 100 (verified) |
+| Yes, with no evidence, or evidence says it is only planned | 60 (attested) |
+| Partial | 50 |
+| No | 0 |
+| N/A | excluded (keep the justification) |
+| Unanswered | evidence-check score x 0.8 |
 
-Tokens are read from environment variables named in the config, never stored in it.
+An article's score is the mean of its tests: met is 75 or more, partial is 35 to 74, and gap is below 35. Gap priority is the article weight x shortfall, raised by 1.5x when a binding law imposes it.
 
-**Your own connector:** subclass `Connector`, decorate with `@register("name")`, return `Evidence` items. Packages can also publish connectors through the `aigov.connectors` entry-point group. See `aigov/connectors/base.py`.
+## Plugging into other systems
 
-**CI gate:** exit code 2 when a threshold is breached. Example workflow in `examples/ci/github-action.yml`.
-
-```bash
-aigov assess -c aigov.yaml --fail-on critical --fail-under 60
-```
-
-**Webhook:** `--webhook URL` posts a JSON list of prioritised gaps, ready to turn into tickets.
-
-**REST API** for portals and GRC platforms:
+- **REST API** (interactive docs at `/api/docs`). Systems can create entities, push evidence (`POST /api/entities/{id}/evidence`), bulk-import answers (`POST /api/entities/{id}/answers/import`), run tests (`POST /api/entities/{id}/assessments`) and pull reports. Set `AIGOV_API_TOKEN` to require a bearer token.
+- **CLI and CI gate.** `aigov assess -c config.yaml --fail-on critical` exits with code 2 on a breach. Example workflow: `examples/ci/github-action.yml`.
+- **Local connectors** (`aigov connectors`): documents folder, repository, inventory CSV/JSON/YAML, and questionnaire. Write your own by subclassing `Connector`. See `aigov/connectors/base.py`.
 
 ```bash
-AIGOV_API_TOKEN=change-me aigov serve --port 8080
+aigov questionnaire --framework eu_ai_act --out answers.yaml
 ```
-
-`POST /assessments` with entity, systems, documents and answers; then `GET /assessments/{id}`, `/gaps` or `/report?format=html`. Interactive docs at `/docs`.
-
-## Extending the catalog
-
-Frameworks live in `aigov/catalog/frameworks.yaml` and controls in `aigov/catalog/controls.yaml`. To add a law, add a framework entry with its `applies_when` rule, then add its clause references under `mappings` on the relevant controls. The loader rejects unknown framework keys and duplicate ids.
 
 ## Limits to know
 
-- Risk-tier screening is keyword-based and meant to prompt a human decision, not replace one.
-- Clause mappings are at article or section level and were written from the published texts; several of these laws are being phased in or amended, so check them before relying on a finding.
-- The tool assesses the evidence it is given. Controls that exist but were not supplied as evidence show up as gaps.
+- The platform judges your answers and the evidence you give it. Keyword evidence checks show that a topic is addressed, not that a control works, so they only corroborate answers.
+- Risk-tier screening is keyword-based and is meant to prompt a human decision.
+- Several of these laws are being phased in or amended (EU AI Act dates, Colorado's effective date, DPDP Rules commencement). Check the current position before relying on a finding.
+- ISO/IEC 42001 is copyrighted. Its entries are short paraphrases; use a licensed copy for the actual requirements.
 
-## Tests
+## Development
 
 ```bash
 python -m pytest
 ```
+
+The suite includes a guard that fails any test that opens a non-local network connection.
