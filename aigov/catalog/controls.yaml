@@ -1,0 +1,771 @@
+# Unified AI governance control catalog.
+#
+# Each control is assessed once and mapped to every framework that requires it,
+# so one piece of evidence can satisfy several regimes.
+#
+#   weight      1-3, relative importance inside the score
+#   conditions  any-of profile flags; omit for controls that always apply
+#               (high_risk, personal_data, generative, gpai_provider, employment,
+#                consequential_decisions, automated_decisions, provider, deployer)
+#   mappings    framework key -> clause references
+#   indicators  offline evidence heuristics: a list of phrase groups. The FIRST group is
+#               the anchor (must match in a document); remaining groups add coverage.
+#   signals     repository signals (see connectors/repo.py) that corroborate the control
+#   remediation default recommendation used when no AI-tailored one is available
+
+controls:
+  # ------------------------------------------------------------------ Governance
+  - id: GOV-01
+    domain: Governance & Accountability
+    title: AI governance policy
+    objective: >-
+      A documented, leadership-approved AI policy sets principles, scope, risk appetite
+      and prohibited uses, and is reviewed on a defined cadence.
+    weight: 3
+    mappings:
+      eu_ai_act: ["Art. 17(1)"]
+      nist_ai_rmf: ["GOVERN 1.1", "GOVERN 1.2", "GOVERN 1.4"]
+      iso_42001: ["5.2", "A.2.2", "A.2.3", "A.2.4"]
+      oecd_ai: ["1.5"]
+      colorado_ai_act: ["6-1-1703(2)"]
+    indicators:
+      - ["ai policy", "ai governance policy", "responsible ai policy", "artificial intelligence policy", "ai governance framework"]
+      - ["approved by", "board", "executive committee", "policy owner"]
+      - ["review", "reviewed annually", "next review", "version"]
+      - ["prohibited use", "unacceptable use", "not permitted", "risk appetite"]
+    remediation:
+      action: Draft and adopt an AI policy covering scope, principles, risk appetite, prohibited uses and review cadence; obtain executive or board approval.
+      effort: medium
+      owner: Chief Risk Officer / AI Governance Lead
+
+  - id: GOV-02
+    domain: Governance & Accountability
+    title: Roles, responsibilities and executive accountability
+    objective: >-
+      Named roles own AI risk decisions end to end (system owners, an oversight body,
+      an accountable executive), with authority and escalation routes defined.
+    weight: 3
+    mappings:
+      eu_ai_act: ["Art. 17(1)(m)", "Art. 26(2)"]
+      nist_ai_rmf: ["GOVERN 2.1", "GOVERN 2.3"]
+      iso_42001: ["5.1", "5.3", "A.3.2", "A.3.3"]
+      oecd_ai: ["1.5"]
+      india_dpdp: ["s. 10(2)"]
+      gdpr: ["Art. 24", "Art. 37"]
+    indicators:
+      - ["roles and responsibilities", "raci", "accountable executive", "ai governance committee", "ai oversight committee", "ai ethics board"]
+      - ["system owner", "model owner", "product owner"]
+      - ["escalat"]
+      - ["report concerns", "whistleblow", "raise concerns", "speak up"]
+    signals: [codeowners]
+    remediation:
+      action: Establish an AI governance committee with a named accountable executive, assign an owner to every AI system, and publish a RACI with escalation and concern-reporting routes.
+      effort: low
+      owner: Chief Executive / Accountable Executive
+
+  - id: GOV-03
+    domain: Governance & Accountability
+    title: AI system inventory
+    objective: >-
+      A complete, current register of AI systems (built and bought) records purpose,
+      owner, role, risk tier, data used and lifecycle status.
+    weight: 3
+    mappings:
+      eu_ai_act: ["Art. 6", "Art. 49"]
+      nist_ai_rmf: ["GOVERN 1.6", "MAP 1.1"]
+      iso_42001: ["4.3", "A.4.2", "A.9.4"]
+      gdpr: ["Art. 30"]
+    indicators:
+      - ["ai inventory", "ai system inventory", "model inventory", "ai register", "ai system register", "model registry"]
+      - ["owner"]
+      - ["risk tier", "risk classification", "risk level"]
+      - ["intended purpose", "use case", "purpose"]
+    signals: [inventory_present, experiment_tracking]
+    remediation:
+      action: Build a central AI system register (including vendor and embedded AI), with owner, purpose, role, risk tier and data categories; make registration a gate before deployment.
+      effort: medium
+      owner: AI Governance Lead
+
+  - id: GOV-04
+    domain: Governance & Accountability
+    title: Legal and regulatory requirements register
+    objective: >-
+      Applicable AI laws, standards and contractual duties are identified per
+      jurisdiction and system, tracked for change, and translated into controls.
+    weight: 2
+    mappings:
+      nist_ai_rmf: ["GOVERN 1.1"]
+      iso_42001: ["4.1", "4.2", "6.1"]
+      oecd_ai: ["1.2"]
+    indicators:
+      - ["regulatory register", "legal register", "obligations register", "regulatory horizon", "applicable laws", "compliance obligations"]
+      - ["eu ai act", "gdpr", "nist", "iso 42001", "iso/iec 42001", "dpdp"]
+      - ["monitor", "track", "horizon scanning", "updated"]
+    remediation:
+      action: Maintain an obligations register mapping each AI system to the laws and standards that apply to it, with an owner responsible for horizon scanning.
+      effort: low
+      owner: General Counsel / Compliance
+
+  - id: GOV-05
+    domain: Governance & Accountability
+    title: AI literacy and competence
+    objective: >-
+      Staff who build, operate or rely on AI receive role-appropriate training, and
+      completion is recorded.
+    weight: 2
+    mappings:
+      eu_ai_act: ["Art. 4", "Art. 26(2)"]
+      nist_ai_rmf: ["GOVERN 2.2", "MAP 3.4"]
+      iso_42001: ["7.2", "7.3", "A.4.6"]
+    indicators:
+      - ["ai literacy", "ai training", "responsible ai training", "training programme", "training program"]
+      - ["completion", "attendance", "training record"]
+      - ["role-based", "role-specific", "developers", "operators", "all staff"]
+    remediation:
+      action: Roll out role-based AI literacy training (all staff, operators, developers, leadership) and track completion.
+      effort: low
+      owner: HR / Learning & Development
+
+  - id: GOV-06
+    domain: Governance & Accountability
+    title: Internal audit and management review
+    objective: >-
+      The AI governance programme is independently audited and reviewed by management
+      at planned intervals, and nonconformities are corrected.
+    weight: 2
+    mappings:
+      nist_ai_rmf: ["GOVERN 1.5", "MEASURE 1.3"]
+      iso_42001: ["9.2", "9.3", "10.1", "10.2"]
+      india_dpdp: ["s. 10(2)(b)"]
+    indicators:
+      - ["internal audit", "independent review", "independent audit", "management review", "assurance review"]
+      - ["finding", "nonconformit", "corrective action"]
+      - ["annual", "quarterly", "audit plan", "schedule"]
+    remediation:
+      action: Add AI governance to the internal audit plan, hold a periodic management review, and track corrective actions to closure.
+      effort: medium
+      owner: Head of Internal Audit
+
+  # ------------------------------------------------------------------ Risk
+  - id: RSK-01
+    domain: Risk Management
+    title: Risk classification and prohibited-practice screening
+    objective: >-
+      Every AI system is classified against legal risk tiers before deployment, and
+      screened against prohibited practices; the rationale is recorded.
+    weight: 3
+    mappings:
+      eu_ai_act: ["Art. 5", "Art. 6", "Annex III"]
+      nist_ai_rmf: ["MAP 1.1", "MAP 1.5", "MAP 5.1"]
+      iso_42001: ["6.1.2", "8.2"]
+      colorado_ai_act: ["6-1-1701(9)"]
+    indicators:
+      - ["risk classification", "risk tier", "risk tiering", "high-risk", "high risk"]
+      - ["prohibited", "unacceptable risk", "article 5"]
+      - ["annex iii", "classification rationale", "classification criteria", "screening"]
+    remediation:
+      action: Introduce a mandatory classification step for every AI use case covering prohibited practices and high-risk categories, and record the rationale in the inventory.
+      effort: low
+      owner: AI Governance Lead / Legal
+
+  - id: RSK-02
+    domain: Risk Management
+    title: Lifecycle AI risk management process
+    objective: >-
+      Risks to health, safety, rights and the organisation are identified, analysed,
+      treated and re-evaluated throughout the system lifecycle, with residual risk accepted by an owner.
+    weight: 3
+    mappings:
+      eu_ai_act: ["Art. 9"]
+      nist_ai_rmf: ["GOVERN 1.3", "MAP 5.1", "MANAGE 1.2", "MANAGE 1.3", "MANAGE 1.4"]
+      iso_42001: ["6.1.2", "6.1.3", "8.2", "8.3"]
+      oecd_ai: ["1.4"]
+      colorado_ai_act: ["6-1-1703(2)"]
+    indicators:
+      - ["risk management", "risk assessment", "risk register"]
+      - ["likelihood", "severity", "impact rating", "risk score"]
+      - ["mitigation", "risk treatment", "control"]
+      - ["residual risk", "risk acceptance", "accepted by"]
+    remediation:
+      action: Implement an AI risk management procedure with a risk register per system, defined scoring, treatment plans, residual-risk sign-off and re-assessment triggers.
+      effort: medium
+      owner: Chief Risk Officer
+
+  - id: RSK-03
+    domain: Risk Management
+    title: Impact assessment (AI, fundamental rights, data protection)
+    objective: >-
+      Before deploying systems that can materially affect people, an impact assessment
+      covers affected groups, rights, harms and mitigations, and is updated on change.
+    weight: 3
+    conditions: [high_risk, personal_data, consequential_decisions]
+    mappings:
+      eu_ai_act: ["Art. 27"]
+      gdpr: ["Art. 35"]
+      nist_ai_rmf: ["MAP 3.1", "MAP 3.2", "MAP 5.1", "GOVERN 4.2"]
+      iso_42001: ["6.1.4", "8.4", "A.5.2", "A.5.3", "A.5.4", "A.5.5"]
+      colorado_ai_act: ["6-1-1703(3)"]
+      india_dpdp: ["s. 10(2)(c)"]
+      oecd_ai: ["1.2"]
+    indicators:
+      - ["impact assessment", "dpia", "fria", "aiia", "algorithmic impact"]
+      - ["affected", "individuals", "groups", "data subjects"]
+      - ["fundamental rights", "discrimination", "harm"]
+      - ["mitigation", "safeguard"]
+    remediation:
+      action: Adopt a combined AI/data-protection/fundamental-rights impact assessment template and require a completed assessment before go-live and on material change.
+      effort: medium
+      owner: Data Protection Officer / AI Governance Lead
+
+  - id: RSK-04
+    domain: Risk Management
+    title: Conformity assessment, declaration and registration
+    objective: >-
+      High-risk systems complete the required conformity assessment, declaration and
+      database registration before being placed on the market or put into service.
+    weight: 3
+    conditions: [high_risk]
+    mappings:
+      eu_ai_act: ["Art. 16", "Art. 43", "Art. 47", "Art. 48", "Art. 49"]
+      iso_42001: ["A.6.2.5"]
+    indicators:
+      - ["conformity assessment", "declaration of conformity", "ce marking", "eu database"]
+      - ["notified body", "internal control", "annex vi", "annex vii"]
+      - ["registration", "registered"]
+    remediation:
+      action: Plan the conformity assessment route for each high-risk system, prepare the declaration of conformity and register the system before placing it on the market.
+      effort: high
+      owner: Regulatory Affairs / Product Compliance
+
+  # ------------------------------------------------------------------ Data
+  - id: DAT-01
+    domain: Data Governance
+    title: Data quality, provenance and documentation
+    objective: >-
+      Training, validation and test data are documented (source, collection, licensing,
+      preparation) and checked for relevance, representativeness, errors and gaps.
+    weight: 3
+    mappings:
+      eu_ai_act: ["Art. 10"]
+      nist_ai_rmf: ["MAP 2.3", "MEASURE 2.1"]
+      iso_42001: ["A.4.3", "A.7.2", "A.7.3", "A.7.4", "A.7.5", "A.7.6"]
+      india_dpdp: ["s. 8(3)"]
+      gdpr: ["Art. 5(1)(d)"]
+    indicators:
+      - ["datasheet", "data card", "data governance", "dataset documentation", "data provenance", "data lineage"]
+      - ["data quality", "representative", "completeness"]
+      - ["source", "collected", "licen"]
+      - ["train", "validation", "test set", "hold-out"]
+    signals: [datasheet, data_versioning]
+    remediation:
+      action: Produce a datasheet for every dataset used in AI development (source, licence, preparation, known gaps), and add automated data-quality checks and versioning.
+      effort: medium
+      owner: Head of Data
+
+  - id: DAT-02
+    domain: Data Governance
+    title: Bias examination and mitigation in data
+    objective: >-
+      Datasets are examined for biases likely to affect rights or cause discrimination,
+      and mitigation measures are applied and recorded.
+    weight: 3
+    conditions: [high_risk, consequential_decisions, employment, personal_data]
+    mappings:
+      eu_ai_act: ["Art. 10(2)(f)", "Art. 10(2)(g)"]
+      nist_ai_rmf: ["MEASURE 2.11", "MAP 2.3"]
+      iso_42001: ["A.7.4", "A.5.4"]
+      oecd_ai: ["1.2"]
+      colorado_ai_act: ["6-1-1702(1)", "6-1-1703(1)"]
+    indicators:
+      - ["bias", "discriminat", "fairness"]
+      - ["protected characteristic", "protected attribute", "protected class", "demographic", "subgroup"]
+      - ["mitigat", "re-weight", "resampl", "rebalanc"]
+    signals: [fairness_lib]
+    remediation:
+      action: Add a bias examination step to data preparation covering protected groups and proxies, and document findings and mitigations.
+      effort: medium
+      owner: Head of Data Science
+
+  - id: DAT-03
+    domain: Data Governance
+    title: Privacy, lawful basis and data minimisation
+    objective: >-
+      Personal data used by AI has a lawful basis or valid consent, clear notice, is
+      minimised, retained only as needed, and protected by design.
+    weight: 3
+    conditions: [personal_data]
+    mappings:
+      gdpr: ["Art. 5", "Art. 6", "Art. 13", "Art. 14", "Art. 25", "Art. 32"]
+      india_dpdp: ["s. 4", "s. 5", "s. 6", "s. 8(5)", "s. 8(7)"]
+      eu_ai_act: ["Art. 10(5)"]
+      nist_ai_rmf: ["MEASURE 2.10"]
+      iso_42001: ["A.7.3"]
+      oecd_ai: ["1.2"]
+    indicators:
+      - ["lawful basis", "legal basis", "consent", "privacy notice", "privacy by design", "data protection"]
+      - ["data minimi", "purpose limitation"]
+      - ["retention", "erasure", "delet"]
+      - ["pseudonym", "anonymi", "encrypt", "access control"]
+    signals: [pii_tooling]
+    remediation:
+      action: Record the lawful basis or consent for each AI processing purpose, update privacy notices, and apply minimisation, retention limits and pseudonymisation to training and inference data.
+      effort: medium
+      owner: Data Protection Officer
+
+  - id: DAT-04
+    domain: Data Governance
+    title: Individual rights and automated decision safeguards
+    objective: >-
+      Individuals can exercise access, correction, erasure and objection rights, and
+      solely automated decisions with significant effects have safeguards.
+    weight: 2
+    conditions: [personal_data]
+    mappings:
+      gdpr: ["Art. 15", "Art. 16", "Art. 17", "Art. 21", "Art. 22"]
+      india_dpdp: ["s. 11", "s. 12", "s. 13"]
+      colorado_ai_act: ["6-1-1703(4)"]
+      nist_ai_rmf: ["MEASURE 2.10"]
+    indicators:
+      - ["data subject right", "data principal", "right of access", "subject access", "right to erasure", "right to object", "rights request"]
+      - ["automated decision", "article 22", "solely automated"]
+      - ["within", "response time", "30 days", "one month", "grievance"]
+    remediation:
+      action: Extend the rights-request procedure to AI systems (including training data and model outputs) and define safeguards for solely automated decisions.
+      effort: medium
+      owner: Data Protection Officer
+
+  # ------------------------------------------------------------------ Development
+  - id: DEV-01
+    domain: Development & Technical Documentation
+    title: Technical documentation and model cards
+    objective: >-
+      Each system has current technical documentation: intended purpose, design,
+      architecture, data, performance, limitations and change history.
+    weight: 3
+    mappings:
+      eu_ai_act: ["Art. 11", "Annex IV", "Art. 18"]
+      nist_ai_rmf: ["MAP 2.1", "MAP 2.2", "MEASURE 2.8"]
+      iso_42001: ["A.6.2.2", "A.6.2.3", "A.6.2.7"]
+      oecd_ai: ["1.3"]
+      colorado_ai_act: ["6-1-1702(2)"]
+    indicators:
+      - ["model card", "technical documentation", "system card", "system documentation"]
+      - ["intended use", "intended purpose"]
+      - ["limitation", "out-of-scope", "out of scope", "known issues"]
+      - ["performance", "metric", "evaluation result"]
+    signals: [model_card]
+    remediation:
+      action: Create a model/system card for each AI system covering intended purpose, architecture, data, metrics and limitations, and keep it under version control with the code.
+      effort: medium
+      owner: Engineering Lead
+
+  - id: DEV-02
+    domain: Development & Technical Documentation
+    title: Testing, validation and performance thresholds
+    objective: >-
+      Systems are tested against documented metrics and acceptance thresholds for
+      accuracy and robustness before release and after change.
+    weight: 3
+    mappings:
+      eu_ai_act: ["Art. 9(6)", "Art. 9(8)", "Art. 15"]
+      nist_ai_rmf: ["MEASURE 1.1", "MEASURE 2.1", "MEASURE 2.3", "MEASURE 2.5", "MEASURE 2.6"]
+      iso_42001: ["A.6.2.4"]
+      oecd_ai: ["1.4"]
+    indicators:
+      - ["validation", "evaluation", "test plan", "test report", "benchmark"]
+      - ["accuracy", "precision", "recall", "f1", "auc", "error rate"]
+      - ["threshold", "acceptance criteria", "release criteria", "go/no-go"]
+      - ["robustness", "stress test", "edge case", "out-of-distribution"]
+    signals: [tests, eval_scripts, ci]
+    remediation:
+      action: Define metrics and release thresholds per system, automate evaluation in CI, and retain signed-off test reports.
+      effort: medium
+      owner: Head of Data Science / QA
+
+  - id: DEV-03
+    domain: Development & Technical Documentation
+    title: Fairness and non-discrimination testing
+    objective: >-
+      Outcomes are measured across relevant groups using defined fairness metrics, and
+      disparities are investigated, mitigated and, where required, independently audited.
+    weight: 3
+    conditions: [high_risk, consequential_decisions, employment]
+    mappings:
+      eu_ai_act: ["Art. 10(2)(f)", "Art. 15(4)"]
+      nist_ai_rmf: ["MEASURE 2.11"]
+      iso_42001: ["A.5.4", "A.6.2.4"]
+      oecd_ai: ["1.2"]
+      nyc_ll144: ["20-871(a)(1)", "6 RCNY 5-301"]
+      colorado_ai_act: ["6-1-1703(1)", "6-1-1703(3)"]
+    indicators:
+      - ["fairness test", "bias audit", "bias test", "disparate impact", "fairness metric", "fairness assessment"]
+      - ["demographic parity", "equalized odds", "equal opportunity", "impact ratio", "selection rate", "four-fifths"]
+      - ["independent auditor", "independent audit", "third-party audit"]
+    signals: [fairness_lib]
+    remediation:
+      action: Add group fairness metrics to the evaluation suite, set tolerances, and commission an independent bias audit where the law requires one.
+      effort: medium
+      owner: Head of Data Science
+
+  - id: DEV-04
+    domain: Development & Technical Documentation
+    title: Security and adversarial resilience
+    objective: >-
+      AI-specific threats (data poisoning, model evasion and extraction, prompt
+      injection, supply chain) are threat-modelled, tested and controlled.
+    weight: 3
+    mappings:
+      eu_ai_act: ["Art. 15(5)"]
+      nist_ai_rmf: ["MEASURE 2.7", "MANAGE 2.3"]
+      iso_42001: ["A.6.2.4", "A.4.5"]
+      gdpr: ["Art. 32"]
+      india_dpdp: ["s. 8(5)"]
+      oecd_ai: ["1.4"]
+    indicators:
+      - ["threat model", "adversarial", "red team", "red-team", "penetration test", "security assessment", "security testing"]
+      - ["prompt injection", "data poisoning", "model extraction", "evasion", "jailbreak"]
+      - ["access control", "least privilege", "secrets", "encryption"]
+    signals: [security_policy, adversarial_testing, dependency_lock]
+    remediation:
+      action: Threat-model each AI system, run adversarial/red-team testing before release, and harden model, data and pipeline access.
+      effort: medium
+      owner: Chief Information Security Officer
+
+  - id: DEV-05
+    domain: Development & Technical Documentation
+    title: Change management, versioning and reproducibility
+    objective: >-
+      Models, data and code are versioned; changes are reviewed and approved; and a
+      released model can be reproduced and rolled back.
+    weight: 2
+    mappings:
+      eu_ai_act: ["Art. 17(1)(b)", "Art. 43(4)"]
+      nist_ai_rmf: ["MANAGE 4.1", "MANAGE 4.2"]
+      iso_42001: ["A.6.2.3", "A.6.2.5", "A.4.4"]
+    indicators:
+      - ["change management", "change control", "release process", "model versioning", "version control"]
+      - ["approval", "peer review", "sign-off", "sign off"]
+      - ["rollback", "roll back", "reproducib"]
+    signals: [experiment_tracking, data_versioning, ci, changelog]
+    remediation:
+      action: Version models and datasets alongside code, require reviewed and approved changes, and define what counts as a substantial modification that re-triggers assessment.
+      effort: low
+      owner: Engineering Lead / MLOps
+
+  # ------------------------------------------------------------------ Transparency
+  - id: TRN-01
+    domain: Transparency & Explainability
+    title: AI interaction disclosure and AI-generated content marking
+    objective: >-
+      People are told when they are interacting with AI, and synthetic or manipulated
+      content is labelled or machine-readably marked.
+    weight: 2
+    conditions: [generative, consumer_facing]
+    mappings:
+      eu_ai_act: ["Art. 50"]
+      colorado_ai_act: ["6-1-1704"]
+      nist_ai_rmf: ["GOVERN 5.1", "MEASURE 2.8"]
+      iso_42001: ["A.8.2"]
+      oecd_ai: ["1.3"]
+    indicators:
+      - ["ai disclosure", "interacting with an ai", "ai-generated", "ai generated", "synthetic content", "you are chatting with"]
+      - ["label", "watermark", "disclos", "notice"]
+    remediation:
+      action: Add clear AI-interaction notices at the point of use and label or watermark AI-generated content.
+      effort: low
+      owner: Product Lead
+
+  - id: TRN-02
+    domain: Transparency & Explainability
+    title: Instructions for use and information for deployers and users
+    objective: >-
+      Users and downstream deployers receive clear information on capabilities,
+      limitations, intended use, required oversight and maintenance.
+    weight: 2
+    mappings:
+      eu_ai_act: ["Art. 13", "Art. 26(1)"]
+      nist_ai_rmf: ["MAP 2.2", "MAP 3.4"]
+      iso_42001: ["A.8.2", "A.8.5", "A.9.2", "A.9.4", "A.10.4"]
+      oecd_ai: ["1.3"]
+      colorado_ai_act: ["6-1-1702(2)", "6-1-1702(3)"]
+    indicators:
+      - ["instructions for use", "user guide", "acceptable use", "usage guidelines", "deployer documentation"]
+      - ["limitation", "not intended", "should not be used"]
+      - ["human oversight", "review the output", "verify"]
+    remediation:
+      action: Publish instructions for use for each system stating capabilities, limitations, intended and prohibited uses, and oversight expectations.
+      effort: low
+      owner: Product Lead
+
+  - id: TRN-03
+    domain: Transparency & Explainability
+    title: Explainability and explanation of decisions
+    objective: >-
+      Outputs can be interpreted by operators, and affected individuals can obtain a
+      meaningful explanation of decisions that significantly affect them.
+    weight: 2
+    conditions: [high_risk, consequential_decisions, automated_decisions]
+    mappings:
+      eu_ai_act: ["Art. 13(1)", "Art. 86"]
+      gdpr: ["Art. 13(2)(f)", "Art. 15(1)(h)", "Art. 22(3)"]
+      nist_ai_rmf: ["MEASURE 2.9"]
+      iso_42001: ["A.8.2"]
+      oecd_ai: ["1.3"]
+      colorado_ai_act: ["6-1-1703(4)(b)"]
+    indicators:
+      - ["explainab", "interpretab", "explanation", "reason code", "adverse action"]
+      - ["shap", "lime", "feature importance", "principal reason", "main factors"]
+      - ["individual", "applicant", "customer", "data subject", "consumer"]
+    signals: [explainability_lib]
+    remediation:
+      action: Implement explanation methods suited to each model and a process to give affected individuals the main reasons for a decision.
+      effort: medium
+      owner: Head of Data Science / Product Lead
+
+  - id: TRN-04
+    domain: Transparency & Explainability
+    title: Notices to affected individuals and public statements
+    objective: >-
+      People subject to consequential or employment decisions are notified of AI use
+      in advance, and legally required public summaries are published.
+    weight: 2
+    conditions: [consequential_decisions, employment]
+    mappings:
+      eu_ai_act: ["Art. 26(7)", "Art. 26(11)"]
+      nyc_ll144: ["20-871(a)(2)", "20-871(b)"]
+      colorado_ai_act: ["6-1-1703(4)(a)", "6-1-1703(5)"]
+      iso_42001: ["A.8.3", "A.8.5"]
+    indicators:
+      - ["candidate notice", "notify candidates", "notice to consumers", "notice to employees", "notification of ai use", "public statement", "summary of results"]
+      - ["before", "prior to", "in advance", "10 business days"]
+      - ["published", "website", "publicly available"]
+    remediation:
+      action: Issue advance notices to people subject to AI-assisted decisions and publish the required summaries (for example bias audit results) on your website.
+      effort: low
+      owner: Legal / HR / Product
+
+  # ------------------------------------------------------------------ Human oversight
+  - id: HUM-01
+    domain: Human Oversight
+    title: Human oversight by design
+    objective: >-
+      Competent, authorised people can understand, monitor, override and stop the
+      system, and automation bias is addressed.
+    weight: 3
+    mappings:
+      eu_ai_act: ["Art. 14", "Art. 26(2)"]
+      nist_ai_rmf: ["GOVERN 3.2", "MAP 3.5", "MANAGE 2.4"]
+      iso_42001: ["A.9.2", "A.9.3"]
+      oecd_ai: ["1.2", "1.5"]
+    indicators:
+      - ["human oversight", "human-in-the-loop", "human in the loop", "human review", "human-on-the-loop"]
+      - ["override", "intervene", "stop", "kill switch", "disable"]
+      - ["automation bias", "over-reliance", "overreliance", "trained reviewer", "competent"]
+    remediation:
+      action: Define the oversight model for each system (who reviews what, when), build override and stop mechanisms, and train reviewers on automation bias.
+      effort: medium
+      owner: System Owner / Operations Lead
+
+  - id: HUM-02
+    domain: Human Oversight
+    title: Contestation, appeal and human review of decisions
+    objective: >-
+      Affected individuals can contest an AI-assisted decision, correct data and
+      obtain human review.
+    weight: 2
+    conditions: [high_risk, consequential_decisions, automated_decisions]
+    mappings:
+      gdpr: ["Art. 22(3)"]
+      colorado_ai_act: ["6-1-1703(4)(b)"]
+      nist_ai_rmf: ["MANAGE 4.1", "MEASURE 3.3"]
+      iso_42001: ["A.8.3"]
+      india_dpdp: ["s. 13"]
+      nyc_ll144: ["6 RCNY 5-304"]
+    indicators:
+      - ["appeal", "contest", "challenge the decision", "request human review", "alternative selection process", "complaint"]
+      - ["human review", "reviewed by a person", "manual review"]
+      - ["within", "days", "response time"]
+    remediation:
+      action: Provide an appeal channel with human review and a correction route for every consequential AI-assisted decision.
+      effort: low
+      owner: Customer Operations / HR
+
+  # ------------------------------------------------------------------ Operations
+  - id: OPS-01
+    domain: Operations & Monitoring
+    title: Logging and record-keeping
+    objective: >-
+      Systems automatically log events needed to trace operation, decisions and
+      oversight, and logs are retained for the required period.
+    weight: 3
+    mappings:
+      eu_ai_act: ["Art. 12", "Art. 19", "Art. 26(6)"]
+      nist_ai_rmf: ["MEASURE 2.8", "MANAGE 4.1"]
+      iso_42001: ["A.6.2.8", "7.5"]
+      oecd_ai: ["1.5"]
+    indicators:
+      - ["audit log", "audit trail", "event log", "decision log", "logging", "record-keeping", "record keeping"]
+      - ["retention", "retained for", "six months", "6 months"]
+      - ["traceab", "input", "output", "model version"]
+    signals: [logging_usage]
+    remediation:
+      action: Log inputs, outputs, model version and human interventions for each decision, with tamper-evident storage and a defined retention period.
+      effort: medium
+      owner: Engineering Lead / MLOps
+
+  - id: OPS-02
+    domain: Operations & Monitoring
+    title: Post-deployment monitoring
+    objective: >-
+      Performance, drift, fairness and misuse are monitored in production against
+      thresholds, with alerts and defined responses.
+    weight: 3
+    mappings:
+      eu_ai_act: ["Art. 72", "Art. 26(5)"]
+      nist_ai_rmf: ["MEASURE 2.4", "MEASURE 3.1", "MANAGE 4.1"]
+      iso_42001: ["9.1", "A.6.2.6"]
+      oecd_ai: ["1.4"]
+    indicators:
+      - ["post-market monitoring", "post-deployment monitoring", "model monitoring", "production monitoring", "monitoring plan"]
+      - ["drift", "degradation", "performance decay"]
+      - ["alert", "threshold", "dashboard"]
+      - ["retrain", "rollback", "response"]
+    signals: [monitoring_lib]
+    remediation:
+      action: Deploy production monitoring for performance, drift and fairness with alert thresholds, owners and documented response playbooks.
+      effort: medium
+      owner: MLOps Lead
+
+  - id: OPS-03
+    domain: Operations & Monitoring
+    title: Incident management and regulatory reporting
+    objective: >-
+      AI incidents and near misses are detected, triaged, corrected, recorded and
+      reported to authorities and affected parties within legal deadlines.
+    weight: 3
+    mappings:
+      eu_ai_act: ["Art. 73", "Art. 20", "Art. 26(5)"]
+      gdpr: ["Art. 33", "Art. 34"]
+      india_dpdp: ["s. 8(6)"]
+      nist_ai_rmf: ["GOVERN 4.3", "MANAGE 4.3"]
+      iso_42001: ["A.8.4", "10.2"]
+      colorado_ai_act: ["6-1-1702(5)", "6-1-1703(7)"]
+    indicators:
+      - ["incident response", "incident management", "serious incident", "ai incident"]
+      - ["report to", "notify the", "regulator", "supervisory authority", "market surveillance"]
+      - ["within", "hours", "days", "deadline"]
+      - ["root cause", "post-incident", "lessons learned", "corrective action"]
+    remediation:
+      action: Extend the incident process to AI harms and malfunctions, with severity criteria, regulator notification deadlines and post-incident review.
+      effort: medium
+      owner: CISO / AI Governance Lead
+
+  - id: OPS-04
+    domain: Operations & Monitoring
+    title: Corrective action, withdrawal and decommissioning
+    objective: >-
+      Non-conforming or unsafe systems can be corrected, suspended, withdrawn or
+      retired in a controlled way, including data and model disposal.
+    weight: 1
+    mappings:
+      eu_ai_act: ["Art. 20"]
+      nist_ai_rmf: ["GOVERN 1.7", "MANAGE 2.4"]
+      iso_42001: ["A.6.2.6", "10.2"]
+    indicators:
+      - ["decommission", "retire", "withdraw", "sunset", "suspend"]
+      - ["criteria", "trigger", "procedure"]
+      - ["archive", "dispos", "delet"]
+    remediation:
+      action: Define suspension and decommissioning criteria and a retirement procedure covering model, data and user communication.
+      effort: low
+      owner: System Owner
+
+  # ------------------------------------------------------------------ Third parties
+  - id: TPR-01
+    domain: Third-Party & Supply Chain
+    title: Vendor and third-party AI due diligence
+    objective: >-
+      Third-party AI systems, models and data are assessed before use; contracts
+      allocate responsibilities, documentation, audit and incident duties.
+    weight: 3
+    mappings:
+      eu_ai_act: ["Art. 25", "Art. 26(1)"]
+      gdpr: ["Art. 28"]
+      nist_ai_rmf: ["GOVERN 6.1", "GOVERN 6.2", "MAP 4.1", "MAP 4.2", "MANAGE 3.1"]
+      iso_42001: ["A.10.2", "A.10.3"]
+    indicators:
+      - ["vendor", "third-party", "third party", "supplier", "procurement"]
+      - ["due diligence", "vendor assessment", "risk assessment", "questionnaire"]
+      - ["contract", "data processing agreement", "dpa", "sla", "audit right"]
+      - ["ai", "model", "llm"]
+    remediation:
+      action: Add AI-specific due diligence to procurement and contract clauses covering documentation, permitted use, audit rights, incident notice and model change notification.
+      effort: medium
+      owner: Procurement / Vendor Risk
+
+  - id: TPR-02
+    domain: Third-Party & Supply Chain
+    title: Monitoring of third-party and pre-trained models
+    objective: >-
+      Pre-trained and vendor models in use are tracked by version, evaluated for the
+      organisation's use case, and monitored for changes and failures.
+    weight: 2
+    mappings:
+      nist_ai_rmf: ["MANAGE 3.1", "MANAGE 3.2", "GOVERN 6.2"]
+      iso_42001: ["A.10.3", "A.4.4"]
+      eu_ai_act: ["Art. 25(4)"]
+    indicators:
+      - ["foundation model", "pre-trained", "pretrained", "third-party model", "vendor model", "model provider", "llm provider"]
+      - ["version", "pinned", "deprecat", "model change"]
+      - ["evaluat", "tested for our", "fallback", "contingency"]
+    signals: [dependency_lock, eval_scripts]
+    remediation:
+      action: Pin and record vendor model versions, re-run your evaluation suite on every model change, and define a fallback for vendor outage or withdrawal.
+      effort: low
+      owner: Engineering Lead
+
+  - id: GPA-01
+    domain: Third-Party & Supply Chain
+    title: General-purpose AI model provider obligations
+    objective: >-
+      Providers of general-purpose AI models maintain technical documentation, give
+      downstream providers the information they need, respect copyright, and publish a training-content summary.
+    weight: 3
+    conditions: [gpai_provider]
+    mappings:
+      eu_ai_act: ["Art. 53", "Art. 55", "Annex XI", "Annex XII"]
+      nist_ai_rmf: ["AI 600-1"]
+    indicators:
+      - ["general-purpose ai", "general purpose ai", "gpai", "foundation model"]
+      - ["copyright", "text and data mining", "opt-out", "rights reservation"]
+      - ["training data summary", "summary of training content", "training content"]
+      - ["downstream provider", "downstream documentation"]
+    remediation:
+      action: Prepare the model documentation package, a copyright compliance policy and a public training-content summary; assess whether the model presents systemic risk.
+      effort: high
+      owner: Regulatory Affairs / Research Lead
+
+  # ------------------------------------------------------------------ Generative AI
+  - id: GEN-01
+    domain: Generative AI Safeguards
+    title: Generative AI safety evaluation and guardrails
+    objective: >-
+      Generative systems are evaluated and guarded for harmful or false output,
+      prompt injection, data leakage and misuse; staff use of public tools is governed.
+    weight: 2
+    conditions: [generative]
+    mappings:
+      nist_ai_rmf: ["AI 600-1", "MEASURE 2.6", "MEASURE 2.7"]
+      eu_ai_act: ["Art. 50(2)", "Art. 15"]
+      iso_42001: ["A.9.2", "A.6.2.4"]
+      oecd_ai: ["1.4"]
+    indicators:
+      - ["generative ai", "genai", "large language model", "llm"]
+      - ["hallucinat", "confabulat", "factual accuracy", "grounding"]
+      - ["guardrail", "content filter", "moderation", "prompt injection", "jailbreak"]
+      - ["acceptable use", "confidential", "do not paste", "approved tools"]
+    signals: [guardrails_lib, adversarial_testing, eval_scripts]
+    remediation:
+      action: Add input/output guardrails, evaluate hallucination and prompt-injection resistance before release, and publish an acceptable-use policy for generative AI tools.
+      effort: medium
+      owner: Product Lead / CISO

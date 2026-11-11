@@ -1,0 +1,46 @@
+# Example: a fictional consumer lender. Run from the project root:
+#   aigov assess -c examples/acme/aigov.yaml --out examples/acme/out
+entity:
+  name: Acme Lending (example)
+  sector: Consumer financial services
+  jurisdictions: [EU, US-CO, US-NY, IN]
+  size: 800 employees
+
+systems:
+  - id: SYS-001
+    name: CreditScore v4
+    description: Gradient-boosted model that produces a creditworthiness score for consumer loan applications.
+    purpose: Loan approval decision support and pricing
+    role: provider
+    domain: credit
+    owner: Head of Credit Risk
+    model: XGBoost (in-house)
+    uses_personal_data: true
+    automated_decisions: true
+    risk_tier: high
+  - id: SYS-002
+    name: TalentRank
+    description: Vendor tool that ranks job applicants by screening CVs against role requirements.
+    purpose: Shortlisting candidates for recruiters
+    role: deployer
+    domain: employment
+    vendor: HireSmart Inc.
+    uses_personal_data: true
+    risk_tier: limited          # deliberately under-classified to show the screening warning
+  - id: SYS-003
+    name: Ava support assistant
+    description: Customer-facing chatbot built on a third-party large language model; answers account and product questions.
+    purpose: Customer service
+    role: deployer
+    domain: customer service
+    owner: Head of Customer Operations
+    vendor: Third-party LLM API
+    uses_personal_data: true
+    generative: true
+    consumer_facing: true
+    risk_tier: limited
+
+connectors:
+  - {type: documents, path: policies}
+  - {type: repo, path: repo}
+  - {type: questionnaire, path: answers.yaml}

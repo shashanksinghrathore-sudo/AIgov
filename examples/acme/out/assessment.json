@@ -1,0 +1,2035 @@
+{
+  "id": "0d0b90c1237e",
+  "created_at": "2026-11-11T15:37:08+00:00",
+  "tool_version": "0.1.0",
+  "mode": "rules",
+  "model": "",
+  "profile": {
+    "entity": {
+      "name": "Acme Lending (example)",
+      "sector": "Consumer financial services",
+      "jurisdictions": [
+        "EU",
+        "US-CO",
+        "US-NY",
+        "IN"
+      ],
+      "size": "800 employees"
+    },
+    "systems": [
+      {
+        "id": "SYS-001",
+        "name": "CreditScore v4",
+        "description": "Gradient-boosted model that produces a creditworthiness score for consumer loan applications.",
+        "purpose": "Loan approval decision support and pricing",
+        "role": "provider",
+        "domain": "credit",
+        "owner": "Head of Credit Risk",
+        "vendor": "",
+        "model": "XGBoost (in-house)",
+        "uses_personal_data": true,
+        "generative": false,
+        "gpai_model_provider": false,
+        "consumer_facing": false,
+        "automated_decisions": true,
+        "risk_tier": "high",
+        "assessed_risk_tier": "high",
+        "risk_rationale": "Declared in profile. Screening result: high. Matches high-risk area(s): essential services."
+      },
+      {
+        "id": "SYS-002",
+        "name": "TalentRank",
+        "description": "Vendor tool that ranks job applicants by screening CVs against role requirements.",
+        "purpose": "Shortlisting candidates for recruiters",
+        "role": "deployer",
+        "domain": "employment",
+        "owner": "",
+        "vendor": "HireSmart Inc.",
+        "model": "",
+        "uses_personal_data": true,
+        "generative": false,
+        "gpai_model_provider": false,
+        "consumer_facing": false,
+        "automated_decisions": false,
+        "risk_tier": "limited",
+        "assessed_risk_tier": "high",
+        "risk_rationale": "Matches high-risk area(s): employment."
+      },
+      {
+        "id": "SYS-003",
+        "name": "Ava support assistant",
+        "description": "Customer-facing chatbot built on a third-party large language model; answers account and product questions.",
+        "purpose": "Customer service",
+        "role": "deployer",
+        "domain": "customer service",
+        "owner": "Head of Customer Operations",
+        "vendor": "Third-party LLM API",
+        "model": "",
+        "uses_personal_data": true,
+        "generative": true,
+        "gpai_model_provider": false,
+        "consumer_facing": true,
+        "automated_decisions": false,
+        "risk_tier": "limited",
+        "assessed_risk_tier": "limited",
+        "risk_rationale": "Declared in profile. Screening result: limited. Interacts with people or generates content; transparency obligations apply."
+      }
+    ]
+  },
+  "flags": [
+    "automated_decisions",
+    "consequential_decisions",
+    "consumer_facing",
+    "deployer",
+    "employment",
+    "generative",
+    "high_risk",
+    "personal_data",
+    "provider"
+  ],
+  "overall_score": 45.8,
+  "maturity": "Level 3 - Defined",
+  "frameworks": [
+    {
+      "key": "eu_ai_act",
+      "name": "EU Artificial Intelligence Act",
+      "citation": "Regulation (EU) 2024/1689",
+      "binding": true,
+      "applicable": true,
+      "reason": "Entity operates in EU.",
+      "note": "Obligations phase in over several years and the timetable has been subject to amendment proposals. Confirm the dates currently in force for your role and risk tier.",
+      "score": 49.4,
+      "controls_total": 28,
+      "controls_met": 10,
+      "controls_partial": 6,
+      "controls_gap": 12
+    },
+    {
+      "key": "gdpr",
+      "name": "General Data Protection Regulation",
+      "citation": "Regulation (EU) 2016/679",
+      "binding": true,
+      "applicable": true,
+      "reason": "Entity operates in EU and has systems with personal data.",
+      "note": "",
+      "score": 46.5,
+      "controls_total": 11,
+      "controls_met": 3,
+      "controls_partial": 4,
+      "controls_gap": 4
+    },
+    {
+      "key": "colorado_ai_act",
+      "name": "Colorado Artificial Intelligence Act",
+      "citation": "Colorado SB 24-205 (C.R.S. 6-1-1701 et seq.)",
+      "binding": true,
+      "applicable": true,
+      "reason": "Entity operates in US-CO and has systems with consequential decisions.",
+      "note": "Effective date and scope have been revised by the legislature since enactment. Verify the current text before relying on this mapping.",
+      "score": 51.7,
+      "controls_total": 14,
+      "controls_met": 5,
+      "controls_partial": 3,
+      "controls_gap": 6
+    },
+    {
+      "key": "nyc_ll144",
+      "name": "NYC Automated Employment Decision Tools Law",
+      "citation": "NYC Local Law 144 of 2021 (Admin. Code 20-870 et seq.)",
+      "binding": true,
+      "applicable": true,
+      "reason": "Entity operates in US-NY and has systems with employment.",
+      "note": "",
+      "score": 14.3,
+      "controls_total": 3,
+      "controls_met": 0,
+      "controls_partial": 1,
+      "controls_gap": 2
+    },
+    {
+      "key": "india_dpdp",
+      "name": "India Digital Personal Data Protection Act",
+      "citation": "Act No. 22 of 2023, with DPDP Rules 2025",
+      "binding": true,
+      "applicable": true,
+      "reason": "Entity operates in IN and has systems with personal data.",
+      "note": "Provisions commence in phases; confirm which are in force.",
+      "score": 33.5,
+      "controls_total": 9,
+      "controls_met": 1,
+      "controls_partial": 4,
+      "controls_gap": 4
+    },
+    {
+      "key": "nist_ai_rmf",
+      "name": "NIST AI Risk Management Framework",
+      "citation": "NIST AI 100-1 (AI RMF 1.0) and AI 600-1 (Generative AI Profile)",
+      "binding": false,
+      "applicable": true,
+      "reason": "Voluntary global framework; assessed for every entity.",
+      "note": "",
+      "score": 48.8,
+      "controls_total": 30,
+      "controls_met": 10,
+      "controls_partial": 7,
+      "controls_gap": 13
+    },
+    {
+      "key": "iso_42001",
+      "name": "ISO/IEC 42001 AI Management System",
+      "citation": "ISO/IEC 42001:2023",
+      "binding": false,
+      "applicable": true,
+      "reason": "Voluntary global framework; assessed for every entity.",
+      "note": "",
+      "score": 47.0,
+      "controls_total": 31,
+      "controls_met": 10,
+      "controls_partial": 7,
+      "controls_gap": 14
+    },
+    {
+      "key": "oecd_ai",
+      "name": "OECD AI Principles",
+      "citation": "OECD/LEGAL/0449 (2019, revised 2024)",
+      "binding": false,
+      "applicable": true,
+      "reason": "Voluntary global framework; assessed for every entity.",
+      "note": "",
+      "score": 51.8,
+      "controls_total": 18,
+      "controls_met": 7,
+      "controls_partial": 4,
+      "controls_gap": 7
+    }
+  ],
+  "domains": {
+    "Governance & Accountability": 62.7,
+    "Risk Management": 58.8,
+    "Data Governance": 20.5,
+    "Development & Technical Documentation": 53.7,
+    "Transparency & Explainability": 25.0,
+    "Human Oversight": 39.8,
+    "Operations & Monitoring": 52.5,
+    "Third-Party & Supply Chain": 18.0,
+    "Generative AI Safeguards": 60.0
+  },
+  "results": [
+    {
+      "control_id": "GOV-01",
+      "domain": "Governance & Accountability",
+      "title": "AI governance policy",
+      "status": "met",
+      "score": 1.0,
+      "confidence": "medium",
+      "method": "rules",
+      "rationale": "'ai-policy.md' addresses 4 of 4 expected elements. Management attests the control is in place, and evidence corroborates it. Management note: AI Policy v2.1 approved March 2026",
+      "gaps": [],
+      "citations": [
+        {
+          "source": "doc:ai-policy.md",
+          "quote": "Acme Lending AI Policy",
+          "verified": true
+        },
+        {
+          "source": "doc:ai-policy.md",
+          "quote": "Approved by the Executive Committee on 14 March 2026",
+          "verified": true
+        },
+        {
+          "source": "doc:ai-policy.md",
+          "quote": "Version 2.1",
+          "verified": true
+        }
+      ],
+      "recommendations": [],
+      "frameworks": {
+        "eu_ai_act": [
+          "Art. 17(1)"
+        ],
+        "nist_ai_rmf": [
+          "GOVERN 1.1",
+          "GOVERN 1.2",
+          "GOVERN 1.4"
+        ],
+        "iso_42001": [
+          "5.2",
+          "A.2.2",
+          "A.2.3",
+          "A.2.4"
+        ],
+        "oecd_ai": [
+          "1.5"
+        ],
+        "colorado_ai_act": [
+          "6-1-1703(2)"
+        ]
+      },
+      "legally_binding": true,
+      "priority": null,
+      "weight": 3
+    },
+    {
+      "control_id": "GOV-02",
+      "domain": "Governance & Accountability",
+      "title": "Roles, responsibilities and executive accountability",
+      "status": "met",
+      "score": 0.9,
+      "confidence": "medium",
+      "method": "rules",
+      "rationale": "'ai-policy.md' addresses 4 of 4 expected elements. Management attests the control is in place, and evidence corroborates it.",
+      "gaps": [],
+      "citations": [
+        {
+          "source": "doc:ai-policy.md",
+          "quote": "Roles and responsibilities",
+          "verified": true
+        },
+        {
+          "source": "doc:ai-policy.md",
+          "quote": "Every AI system has a named system owner",
+          "verified": true
+        },
+        {
+          "source": "doc:ai-policy.md",
+          "quote": "Issues are escalated to the Committee within five working days",
+          "verified": true
+        }
+      ],
+      "recommendations": [],
+      "frameworks": {
+        "eu_ai_act": [
+          "Art. 17(1)(m)",
+          "Art. 26(2)"
+        ],
+        "nist_ai_rmf": [
+          "GOVERN 2.1",
+          "GOVERN 2.3"
+        ],
+        "iso_42001": [
+          "5.1",
+          "5.3",
+          "A.3.2",
+          "A.3.3"
+        ],
+        "oecd_ai": [
+          "1.5"
+        ],
+        "india_dpdp": [
+          "s. 10(2)"
+        ],
+        "gdpr": [
+          "Art. 24",
+          "Art. 37"
+        ]
+      },
+      "legally_binding": true,
+      "priority": null,
+      "weight": 3
+    },
+    {
+      "control_id": "GOV-03",
+      "domain": "Governance & Accountability",
+      "title": "AI system inventory",
+      "status": "met",
+      "score": 1.0,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "'ai-policy.md' addresses 4 of 4 expected elements. Technical signals present: inventory_present, experiment_tracking. Inventory lists 3 system(s); 66% have owner, purpose, role and risk tier.",
+      "gaps": [],
+      "citations": [
+        {
+          "source": "doc:ai-policy.md",
+          "quote": "The classification rationale is recorded in the AI system inventory.",
+          "verified": true
+        },
+        {
+          "source": "doc:ai-policy.md",
+          "quote": "Policy owner: Chief Risk Officer",
+          "verified": true
+        },
+        {
+          "source": "doc:ai-policy.md",
+          "quote": "Risk classification",
+          "verified": true
+        }
+      ],
+      "recommendations": [],
+      "frameworks": {
+        "eu_ai_act": [
+          "Art. 6",
+          "Art. 49"
+        ],
+        "nist_ai_rmf": [
+          "GOVERN 1.6",
+          "MAP 1.1"
+        ],
+        "iso_42001": [
+          "4.3",
+          "A.4.2",
+          "A.9.4"
+        ],
+        "gdpr": [
+          "Art. 30"
+        ]
+      },
+      "legally_binding": true,
+      "priority": null,
+      "weight": 3
+    },
+    {
+      "control_id": "GOV-04",
+      "domain": "Governance & Accountability",
+      "title": "Legal and regulatory requirements register",
+      "status": "gap",
+      "score": 0.0,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "No evidence found.",
+      "gaps": [
+        "No document found that addresses this control."
+      ],
+      "citations": [],
+      "recommendations": [
+        {
+          "action": "Maintain an obligations register mapping each AI system to the laws and standards that apply to it, with an owner responsible for horizon scanning.",
+          "priority": "high",
+          "effort": "low",
+          "owner": "General Counsel / Compliance"
+        }
+      ],
+      "frameworks": {
+        "nist_ai_rmf": [
+          "GOVERN 1.1"
+        ],
+        "iso_42001": [
+          "4.1",
+          "4.2",
+          "6.1"
+        ],
+        "oecd_ai": [
+          "1.2"
+        ]
+      },
+      "legally_binding": false,
+      "priority": "high",
+      "weight": 2
+    },
+    {
+      "control_id": "GOV-05",
+      "domain": "Governance & Accountability",
+      "title": "AI literacy and competence",
+      "status": "partial",
+      "score": 0.35,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "Management reports the control is partly in place. Management note: Training delivered to data science team only",
+      "gaps": [
+        "No document found that addresses this control."
+      ],
+      "citations": [],
+      "recommendations": [
+        {
+          "action": "Roll out role-based AI literacy training (all staff, operators, developers, leadership) and track completion.",
+          "priority": "medium",
+          "effort": "low",
+          "owner": "HR / Learning & Development"
+        }
+      ],
+      "frameworks": {
+        "eu_ai_act": [
+          "Art. 4",
+          "Art. 26(2)"
+        ],
+        "nist_ai_rmf": [
+          "GOVERN 2.2",
+          "MAP 3.4"
+        ],
+        "iso_42001": [
+          "7.2",
+          "7.3",
+          "A.4.6"
+        ]
+      },
+      "legally_binding": true,
+      "priority": "medium",
+      "weight": 2
+    },
+    {
+      "control_id": "GOV-06",
+      "domain": "Governance & Accountability",
+      "title": "Internal audit and management review",
+      "status": "gap",
+      "score": 0.0,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "Management reports the control is not in place.",
+      "gaps": [
+        "No document found that addresses this control."
+      ],
+      "citations": [],
+      "recommendations": [
+        {
+          "action": "Add AI governance to the internal audit plan, hold a periodic management review, and track corrective actions to closure.",
+          "priority": "high",
+          "effort": "medium",
+          "owner": "Head of Internal Audit"
+        }
+      ],
+      "frameworks": {
+        "nist_ai_rmf": [
+          "GOVERN 1.5",
+          "MEASURE 1.3"
+        ],
+        "iso_42001": [
+          "9.2",
+          "9.3",
+          "10.1",
+          "10.2"
+        ],
+        "india_dpdp": [
+          "s. 10(2)(b)"
+        ]
+      },
+      "legally_binding": true,
+      "priority": "high",
+      "weight": 2
+    },
+    {
+      "control_id": "RSK-01",
+      "domain": "Risk Management",
+      "title": "Risk classification and prohibited-practice screening",
+      "status": "met",
+      "score": 1.0,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "'ai-policy.md' addresses 3 of 3 expected elements.",
+      "gaps": [],
+      "citations": [
+        {
+          "source": "doc:ai-policy.md",
+          "quote": "The AI Governance Committee, chaired by the Chief Risk Officer as accountable executive, approves high-risk use cases",
+          "verified": true
+        },
+        {
+          "source": "doc:ai-policy.md",
+          "quote": "Prohibited use",
+          "verified": true
+        },
+        {
+          "source": "doc:ai-policy.md",
+          "quote": "Each use case receives a risk tier (prohibited, high-risk, limited, minimal) before development starts, using the classification criteria in Annex A, which follow Annex III of the EU AI Act",
+          "verified": true
+        }
+      ],
+      "recommendations": [],
+      "frameworks": {
+        "eu_ai_act": [
+          "Art. 5",
+          "Art. 6",
+          "Annex III"
+        ],
+        "nist_ai_rmf": [
+          "MAP 1.1",
+          "MAP 1.5",
+          "MAP 5.1"
+        ],
+        "iso_42001": [
+          "6.1.2",
+          "8.2"
+        ],
+        "colorado_ai_act": [
+          "6-1-1701(9)"
+        ]
+      },
+      "legally_binding": true,
+      "priority": null,
+      "weight": 3
+    },
+    {
+      "control_id": "RSK-02",
+      "domain": "Risk Management",
+      "title": "Lifecycle AI risk management process",
+      "status": "met",
+      "score": 1.0,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "'model-risk-procedure.md' addresses 4 of 4 expected elements.",
+      "gaps": [],
+      "citations": [
+        {
+          "source": "doc:model-risk-procedure.md",
+          "quote": "Model Risk Management Procedure (Credit Models)",
+          "verified": true
+        },
+        {
+          "source": "doc:model-risk-procedure.md",
+          "quote": "Each credit model has an entry in the model risk register with likelihood and severity ratings, mitigation actions and a control owner",
+          "verified": true
+        },
+        {
+          "source": "doc:model-risk-procedure.md",
+          "quote": "Residual risk is accepted by the Chief Risk Officer before release.",
+          "verified": true
+        }
+      ],
+      "recommendations": [],
+      "frameworks": {
+        "eu_ai_act": [
+          "Art. 9"
+        ],
+        "nist_ai_rmf": [
+          "GOVERN 1.3",
+          "MAP 5.1",
+          "MANAGE 1.2",
+          "MANAGE 1.3",
+          "MANAGE 1.4"
+        ],
+        "iso_42001": [
+          "6.1.2",
+          "6.1.3",
+          "8.2",
+          "8.3"
+        ],
+        "oecd_ai": [
+          "1.4"
+        ],
+        "colorado_ai_act": [
+          "6-1-1703(2)"
+        ]
+      },
+      "legally_binding": true,
+      "priority": null,
+      "weight": 3
+    },
+    {
+      "control_id": "RSK-03",
+      "domain": "Risk Management",
+      "title": "Impact assessment (AI, fundamental rights, data protection)",
+      "status": "partial",
+      "score": 0.35,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "Management reports the control is partly in place. Management note: DPIA exists for CreditScore; none for TalentRank or Ava",
+      "gaps": [
+        "No document found that addresses this control."
+      ],
+      "citations": [],
+      "recommendations": [
+        {
+          "action": "Adopt a combined AI/data-protection/fundamental-rights impact assessment template and require a completed assessment before go-live and on material change.",
+          "priority": "high",
+          "effort": "medium",
+          "owner": "Data Protection Officer / AI Governance Lead"
+        }
+      ],
+      "frameworks": {
+        "eu_ai_act": [
+          "Art. 27"
+        ],
+        "gdpr": [
+          "Art. 35"
+        ],
+        "nist_ai_rmf": [
+          "MAP 3.1",
+          "MAP 3.2",
+          "MAP 5.1",
+          "GOVERN 4.2"
+        ],
+        "iso_42001": [
+          "6.1.4",
+          "8.4",
+          "A.5.2",
+          "A.5.3",
+          "A.5.4",
+          "A.5.5"
+        ],
+        "colorado_ai_act": [
+          "6-1-1703(3)"
+        ],
+        "india_dpdp": [
+          "s. 10(2)(c)"
+        ],
+        "oecd_ai": [
+          "1.2"
+        ]
+      },
+      "legally_binding": true,
+      "priority": "high",
+      "weight": 3
+    },
+    {
+      "control_id": "RSK-04",
+      "domain": "Risk Management",
+      "title": "Conformity assessment, declaration and registration",
+      "status": "gap",
+      "score": 0.0,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "No evidence found.",
+      "gaps": [
+        "No document found that addresses this control."
+      ],
+      "citations": [],
+      "recommendations": [
+        {
+          "action": "Plan the conformity assessment route for each high-risk system, prepare the declaration of conformity and register the system before placing it on the market.",
+          "priority": "critical",
+          "effort": "high",
+          "owner": "Regulatory Affairs / Product Compliance"
+        }
+      ],
+      "frameworks": {
+        "eu_ai_act": [
+          "Art. 16",
+          "Art. 43",
+          "Art. 47",
+          "Art. 48",
+          "Art. 49"
+        ],
+        "iso_42001": [
+          "A.6.2.5"
+        ]
+      },
+      "legally_binding": true,
+      "priority": "critical",
+      "weight": 3
+    },
+    {
+      "control_id": "DAT-01",
+      "domain": "Data Governance",
+      "title": "Data quality, provenance and documentation",
+      "status": "gap",
+      "score": 0.0,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "No evidence found.",
+      "gaps": [
+        "No document found that addresses this control.",
+        "Technical signals not detected: datasheet, data_versioning"
+      ],
+      "citations": [],
+      "recommendations": [
+        {
+          "action": "Produce a datasheet for every dataset used in AI development (source, licence, preparation, known gaps), and add automated data-quality checks and versioning.",
+          "priority": "critical",
+          "effort": "medium",
+          "owner": "Head of Data"
+        }
+      ],
+      "frameworks": {
+        "eu_ai_act": [
+          "Art. 10"
+        ],
+        "nist_ai_rmf": [
+          "MAP 2.3",
+          "MEASURE 2.1"
+        ],
+        "iso_42001": [
+          "A.4.3",
+          "A.7.2",
+          "A.7.3",
+          "A.7.4",
+          "A.7.5",
+          "A.7.6"
+        ],
+        "india_dpdp": [
+          "s. 8(3)"
+        ],
+        "gdpr": [
+          "Art. 5(1)(d)"
+        ]
+      },
+      "legally_binding": true,
+      "priority": "critical",
+      "weight": 3
+    },
+    {
+      "control_id": "DAT-02",
+      "domain": "Data Governance",
+      "title": "Bias examination and mitigation in data",
+      "status": "gap",
+      "score": 0.25,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "'incident-response.md' addresses 1 of 3 expected elements. The document itself indicates the control is incomplete or only planned.",
+      "gaps": [
+        "No evidence of: protected characteristic / protected attribute / protected class",
+        "No evidence of: mitigat / re-weight / resampl",
+        "Stated as absent or planned: \"AI-specific failures (for example a model producing discriminatory outcomes) are not yet covered by this plan.\"",
+        "Technical signals not detected: fairness_lib"
+      ],
+      "citations": [
+        {
+          "source": "doc:incident-response.md",
+          "quote": "AI-specific failures (for example a model producing discriminatory outcomes) are not yet covered by this plan.",
+          "verified": true
+        }
+      ],
+      "recommendations": [
+        {
+          "action": "Add a bias examination step to data preparation covering protected groups and proxies, and document findings and mitigations.",
+          "priority": "high",
+          "effort": "medium",
+          "owner": "Head of Data Science"
+        }
+      ],
+      "frameworks": {
+        "eu_ai_act": [
+          "Art. 10(2)(f)",
+          "Art. 10(2)(g)"
+        ],
+        "nist_ai_rmf": [
+          "MEASURE 2.11",
+          "MAP 2.3"
+        ],
+        "iso_42001": [
+          "A.7.4",
+          "A.5.4"
+        ],
+        "oecd_ai": [
+          "1.2"
+        ],
+        "colorado_ai_act": [
+          "6-1-1702(1)",
+          "6-1-1703(1)"
+        ]
+      },
+      "legally_binding": true,
+      "priority": "high",
+      "weight": 3
+    },
+    {
+      "control_id": "DAT-03",
+      "domain": "Data Governance",
+      "title": "Privacy, lawful basis and data minimisation",
+      "status": "partial",
+      "score": 0.5,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "Management attests the control is in place, but no corroborating evidence was found. Management note: Covered by the group privacy programme",
+      "gaps": [
+        "Attested but unverified: provide the document or record that demonstrates this control.",
+        "No document found that addresses this control.",
+        "Technical signals not detected: pii_tooling"
+      ],
+      "citations": [],
+      "recommendations": [
+        {
+          "action": "Record the lawful basis or consent for each AI processing purpose, update privacy notices, and apply minimisation, retention limits and pseudonymisation to training and inference data.",
+          "priority": "high",
+          "effort": "medium",
+          "owner": "Data Protection Officer"
+        }
+      ],
+      "frameworks": {
+        "gdpr": [
+          "Art. 5",
+          "Art. 6",
+          "Art. 13",
+          "Art. 14",
+          "Art. 25",
+          "Art. 32"
+        ],
+        "india_dpdp": [
+          "s. 4",
+          "s. 5",
+          "s. 6",
+          "s. 8(5)",
+          "s. 8(7)"
+        ],
+        "eu_ai_act": [
+          "Art. 10(5)"
+        ],
+        "nist_ai_rmf": [
+          "MEASURE 2.10"
+        ],
+        "iso_42001": [
+          "A.7.3"
+        ],
+        "oecd_ai": [
+          "1.2"
+        ]
+      },
+      "legally_binding": true,
+      "priority": "high",
+      "weight": 3
+    },
+    {
+      "control_id": "DAT-04",
+      "domain": "Data Governance",
+      "title": "Individual rights and automated decision safeguards",
+      "status": "gap",
+      "score": 0.0,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "No evidence found.",
+      "gaps": [
+        "No document found that addresses this control."
+      ],
+      "citations": [],
+      "recommendations": [
+        {
+          "action": "Extend the rights-request procedure to AI systems (including training data and model outputs) and define safeguards for solely automated decisions.",
+          "priority": "high",
+          "effort": "medium",
+          "owner": "Data Protection Officer"
+        }
+      ],
+      "frameworks": {
+        "gdpr": [
+          "Art. 15",
+          "Art. 16",
+          "Art. 17",
+          "Art. 21",
+          "Art. 22"
+        ],
+        "india_dpdp": [
+          "s. 11",
+          "s. 12",
+          "s. 13"
+        ],
+        "colorado_ai_act": [
+          "6-1-1703(4)"
+        ],
+        "nist_ai_rmf": [
+          "MEASURE 2.10"
+        ]
+      },
+      "legally_binding": true,
+      "priority": "high",
+      "weight": 2
+    },
+    {
+      "control_id": "DEV-01",
+      "domain": "Development & Technical Documentation",
+      "title": "Technical documentation and model cards",
+      "status": "met",
+      "score": 1.0,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "'repo/MODEL_CARD.md' addresses 4 of 4 expected elements. Technical signals present: model_card.",
+      "gaps": [],
+      "citations": [
+        {
+          "source": "repo:repo/MODEL_CARD.md",
+          "quote": "Model card: CreditScore v4",
+          "verified": true
+        },
+        {
+          "source": "repo:repo/MODEL_CARD.md",
+          "quote": "Intended use:** decision support for consumer loan applications in the EU and US",
+          "verified": true
+        },
+        {
+          "source": "repo:repo/MODEL_CARD.md",
+          "quote": "Limitations:** performance degrades for applicants with fewer than six months of credit history",
+          "verified": true
+        }
+      ],
+      "recommendations": [],
+      "frameworks": {
+        "eu_ai_act": [
+          "Art. 11",
+          "Annex IV",
+          "Art. 18"
+        ],
+        "nist_ai_rmf": [
+          "MAP 2.1",
+          "MAP 2.2",
+          "MEASURE 2.8"
+        ],
+        "iso_42001": [
+          "A.6.2.2",
+          "A.6.2.3",
+          "A.6.2.7"
+        ],
+        "oecd_ai": [
+          "1.3"
+        ],
+        "colorado_ai_act": [
+          "6-1-1702(2)"
+        ]
+      },
+      "legally_binding": true,
+      "priority": null,
+      "weight": 3
+    },
+    {
+      "control_id": "DEV-02",
+      "domain": "Development & Technical Documentation",
+      "title": "Testing, validation and performance thresholds",
+      "status": "met",
+      "score": 0.92,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "'model-risk-procedure.md' addresses 4 of 4 expected elements. Technical signals present: tests, ci.",
+      "gaps": [],
+      "citations": [
+        {
+          "source": "doc:model-risk-procedure.md",
+          "quote": "Validation",
+          "verified": true
+        },
+        {
+          "source": "doc:model-risk-procedure.md",
+          "quote": "The validation report records AUC, precision and recall against the acceptance criteria (AUC of at least 0.78 on the hold-out test set)",
+          "verified": true
+        },
+        {
+          "source": "doc:model-risk-procedure.md",
+          "quote": "Robustness is checked with a stress test on recession-period data.",
+          "verified": true
+        }
+      ],
+      "recommendations": [],
+      "frameworks": {
+        "eu_ai_act": [
+          "Art. 9(6)",
+          "Art. 9(8)",
+          "Art. 15"
+        ],
+        "nist_ai_rmf": [
+          "MEASURE 1.1",
+          "MEASURE 2.1",
+          "MEASURE 2.3",
+          "MEASURE 2.5",
+          "MEASURE 2.6"
+        ],
+        "iso_42001": [
+          "A.6.2.4"
+        ],
+        "oecd_ai": [
+          "1.4"
+        ]
+      },
+      "legally_binding": true,
+      "priority": null,
+      "weight": 3
+    },
+    {
+      "control_id": "DEV-03",
+      "domain": "Development & Technical Documentation",
+      "title": "Fairness and non-discrimination testing",
+      "status": "gap",
+      "score": 0.0,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "Management reports the control is not in place. Management note: No bias audit of TalentRank has been commissioned",
+      "gaps": [
+        "No document found that addresses this control.",
+        "Technical signals not detected: fairness_lib"
+      ],
+      "citations": [],
+      "recommendations": [
+        {
+          "action": "Add group fairness metrics to the evaluation suite, set tolerances, and commission an independent bias audit where the law requires one.",
+          "priority": "critical",
+          "effort": "medium",
+          "owner": "Head of Data Science"
+        }
+      ],
+      "frameworks": {
+        "eu_ai_act": [
+          "Art. 10(2)(f)",
+          "Art. 15(4)"
+        ],
+        "nist_ai_rmf": [
+          "MEASURE 2.11"
+        ],
+        "iso_42001": [
+          "A.5.4",
+          "A.6.2.4"
+        ],
+        "oecd_ai": [
+          "1.2"
+        ],
+        "nyc_ll144": [
+          "20-871(a)(1)",
+          "6 RCNY 5-301"
+        ],
+        "colorado_ai_act": [
+          "6-1-1703(1)",
+          "6-1-1703(3)"
+        ]
+      },
+      "legally_binding": true,
+      "priority": "critical",
+      "weight": 3
+    },
+    {
+      "control_id": "DEV-04",
+      "domain": "Development & Technical Documentation",
+      "title": "Security and adversarial resilience",
+      "status": "gap",
+      "score": 0.0,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "No evidence found.",
+      "gaps": [
+        "No document found that addresses this control.",
+        "Technical signals not detected: security_policy, adversarial_testing, dependency_lock"
+      ],
+      "citations": [],
+      "recommendations": [
+        {
+          "action": "Threat-model each AI system, run adversarial/red-team testing before release, and harden model, data and pipeline access.",
+          "priority": "critical",
+          "effort": "medium",
+          "owner": "Chief Information Security Officer"
+        }
+      ],
+      "frameworks": {
+        "eu_ai_act": [
+          "Art. 15(5)"
+        ],
+        "nist_ai_rmf": [
+          "MEASURE 2.7",
+          "MANAGE 2.3"
+        ],
+        "iso_42001": [
+          "A.6.2.4",
+          "A.4.5"
+        ],
+        "gdpr": [
+          "Art. 32"
+        ],
+        "india_dpdp": [
+          "s. 8(5)"
+        ],
+        "oecd_ai": [
+          "1.4"
+        ]
+      },
+      "legally_binding": true,
+      "priority": "critical",
+      "weight": 3
+    },
+    {
+      "control_id": "DEV-05",
+      "domain": "Development & Technical Documentation",
+      "title": "Change management, versioning and reproducibility",
+      "status": "met",
+      "score": 0.88,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "'model-risk-procedure.md' addresses 3 of 3 expected elements. Technical signals present: experiment_tracking, ci.",
+      "gaps": [],
+      "citations": [
+        {
+          "source": "doc:model-risk-procedure.md",
+          "quote": "Change management",
+          "verified": true
+        },
+        {
+          "source": "doc:model-risk-procedure.md",
+          "quote": "Model changes follow change control: peer review, sign-off by Model Validation, and a documented rollback plan",
+          "verified": true
+        }
+      ],
+      "recommendations": [],
+      "frameworks": {
+        "eu_ai_act": [
+          "Art. 17(1)(b)",
+          "Art. 43(4)"
+        ],
+        "nist_ai_rmf": [
+          "MANAGE 4.1",
+          "MANAGE 4.2"
+        ],
+        "iso_42001": [
+          "A.6.2.3",
+          "A.6.2.5",
+          "A.4.4"
+        ]
+      },
+      "legally_binding": true,
+      "priority": null,
+      "weight": 2
+    },
+    {
+      "control_id": "TRN-01",
+      "domain": "Transparency & Explainability",
+      "title": "AI interaction disclosure and AI-generated content marking",
+      "status": "gap",
+      "score": 0.0,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "No evidence found.",
+      "gaps": [
+        "No document found that addresses this control."
+      ],
+      "citations": [],
+      "recommendations": [
+        {
+          "action": "Add clear AI-interaction notices at the point of use and label or watermark AI-generated content.",
+          "priority": "high",
+          "effort": "low",
+          "owner": "Product Lead"
+        }
+      ],
+      "frameworks": {
+        "eu_ai_act": [
+          "Art. 50"
+        ],
+        "colorado_ai_act": [
+          "6-1-1704"
+        ],
+        "nist_ai_rmf": [
+          "GOVERN 5.1",
+          "MEASURE 2.8"
+        ],
+        "iso_42001": [
+          "A.8.2"
+        ],
+        "oecd_ai": [
+          "1.3"
+        ]
+      },
+      "legally_binding": true,
+      "priority": "high",
+      "weight": 2
+    },
+    {
+      "control_id": "TRN-02",
+      "domain": "Transparency & Explainability",
+      "title": "Instructions for use and information for deployers and users",
+      "status": "gap",
+      "score": 0.0,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "No evidence found.",
+      "gaps": [
+        "No document found that addresses this control."
+      ],
+      "citations": [],
+      "recommendations": [
+        {
+          "action": "Publish instructions for use for each system stating capabilities, limitations, intended and prohibited uses, and oversight expectations.",
+          "priority": "high",
+          "effort": "low",
+          "owner": "Product Lead"
+        }
+      ],
+      "frameworks": {
+        "eu_ai_act": [
+          "Art. 13",
+          "Art. 26(1)"
+        ],
+        "nist_ai_rmf": [
+          "MAP 2.2",
+          "MAP 3.4"
+        ],
+        "iso_42001": [
+          "A.8.2",
+          "A.8.5",
+          "A.9.2",
+          "A.9.4",
+          "A.10.4"
+        ],
+        "oecd_ai": [
+          "1.3"
+        ],
+        "colorado_ai_act": [
+          "6-1-1702(2)",
+          "6-1-1702(3)"
+        ]
+      },
+      "legally_binding": true,
+      "priority": "high",
+      "weight": 2
+    },
+    {
+      "control_id": "TRN-03",
+      "domain": "Transparency & Explainability",
+      "title": "Explainability and explanation of decisions",
+      "status": "met",
+      "score": 1.0,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "'repo/MODEL_CARD.md' addresses 3 of 3 expected elements. Technical signals present: explainability_lib.",
+      "gaps": [],
+      "citations": [
+        {
+          "source": "repo:repo/MODEL_CARD.md",
+          "quote": "Explanations:** SHAP values provide the main factors behind each score for the applicant-facing reason codes.",
+          "verified": true
+        },
+        {
+          "source": "repo:repo/MODEL_CARD.md",
+          "quote": "Intended use:** decision support for consumer loan applications in the EU and US",
+          "verified": true
+        }
+      ],
+      "recommendations": [],
+      "frameworks": {
+        "eu_ai_act": [
+          "Art. 13(1)",
+          "Art. 86"
+        ],
+        "gdpr": [
+          "Art. 13(2)(f)",
+          "Art. 15(1)(h)",
+          "Art. 22(3)"
+        ],
+        "nist_ai_rmf": [
+          "MEASURE 2.9"
+        ],
+        "iso_42001": [
+          "A.8.2"
+        ],
+        "oecd_ai": [
+          "1.3"
+        ],
+        "colorado_ai_act": [
+          "6-1-1703(4)(b)"
+        ]
+      },
+      "legally_binding": true,
+      "priority": null,
+      "weight": 2
+    },
+    {
+      "control_id": "TRN-04",
+      "domain": "Transparency & Explainability",
+      "title": "Notices to affected individuals and public statements",
+      "status": "gap",
+      "score": 0.0,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "Management reports the control is not in place.",
+      "gaps": [
+        "No document found that addresses this control."
+      ],
+      "citations": [],
+      "recommendations": [
+        {
+          "action": "Issue advance notices to people subject to AI-assisted decisions and publish the required summaries (for example bias audit results) on your website.",
+          "priority": "high",
+          "effort": "low",
+          "owner": "Legal / HR / Product"
+        }
+      ],
+      "frameworks": {
+        "eu_ai_act": [
+          "Art. 26(7)",
+          "Art. 26(11)"
+        ],
+        "nyc_ll144": [
+          "20-871(a)(2)",
+          "20-871(b)"
+        ],
+        "colorado_ai_act": [
+          "6-1-1703(4)(a)",
+          "6-1-1703(5)"
+        ],
+        "iso_42001": [
+          "A.8.3",
+          "A.8.5"
+        ]
+      },
+      "legally_binding": true,
+      "priority": "high",
+      "weight": 2
+    },
+    {
+      "control_id": "HUM-01",
+      "domain": "Human Oversight",
+      "title": "Human oversight by design",
+      "status": "gap",
+      "score": 0.33,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "'ai-policy.md' addresses 1 of 3 expected elements.",
+      "gaps": [
+        "No evidence of: override / intervene / stop",
+        "No evidence of: automation bias / over-reliance / overreliance"
+      ],
+      "citations": [
+        {
+          "source": "doc:ai-policy.md",
+          "quote": "Human oversight is required for any decision that affects a customer's access to credit.",
+          "verified": true
+        }
+      ],
+      "recommendations": [
+        {
+          "action": "Define the oversight model for each system (who reviews what, when), build override and stop mechanisms, and train reviewers on automation bias.",
+          "priority": "high",
+          "effort": "medium",
+          "owner": "System Owner / Operations Lead"
+        }
+      ],
+      "frameworks": {
+        "eu_ai_act": [
+          "Art. 14",
+          "Art. 26(2)"
+        ],
+        "nist_ai_rmf": [
+          "GOVERN 3.2",
+          "MAP 3.5",
+          "MANAGE 2.4"
+        ],
+        "iso_42001": [
+          "A.9.2",
+          "A.9.3"
+        ],
+        "oecd_ai": [
+          "1.2",
+          "1.5"
+        ]
+      },
+      "legally_binding": true,
+      "priority": "high",
+      "weight": 3
+    },
+    {
+      "control_id": "HUM-02",
+      "domain": "Human Oversight",
+      "title": "Contestation, appeal and human review of decisions",
+      "status": "partial",
+      "score": 0.5,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "Management attests the control is in place, but no corroborating evidence was found.",
+      "gaps": [
+        "Attested but unverified: provide the document or record that demonstrates this control.",
+        "No document found that addresses this control."
+      ],
+      "citations": [],
+      "recommendations": [
+        {
+          "action": "Provide an appeal channel with human review and a correction route for every consequential AI-assisted decision.",
+          "priority": "medium",
+          "effort": "low",
+          "owner": "Customer Operations / HR"
+        }
+      ],
+      "frameworks": {
+        "gdpr": [
+          "Art. 22(3)"
+        ],
+        "colorado_ai_act": [
+          "6-1-1703(4)(b)"
+        ],
+        "nist_ai_rmf": [
+          "MANAGE 4.1",
+          "MEASURE 3.3"
+        ],
+        "iso_42001": [
+          "A.8.3"
+        ],
+        "india_dpdp": [
+          "s. 13"
+        ],
+        "nyc_ll144": [
+          "6 RCNY 5-304"
+        ]
+      },
+      "legally_binding": true,
+      "priority": "medium",
+      "weight": 2
+    },
+    {
+      "control_id": "OPS-01",
+      "domain": "Operations & Monitoring",
+      "title": "Logging and record-keeping",
+      "status": "partial",
+      "score": 0.4,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "Technical signals present: logging_usage. Management reports the control is partly in place.",
+      "gaps": [
+        "No document found that addresses this control."
+      ],
+      "citations": [],
+      "recommendations": [
+        {
+          "action": "Log inputs, outputs, model version and human interventions for each decision, with tamper-evident storage and a defined retention period.",
+          "priority": "high",
+          "effort": "medium",
+          "owner": "Engineering Lead / MLOps"
+        }
+      ],
+      "frameworks": {
+        "eu_ai_act": [
+          "Art. 12",
+          "Art. 19",
+          "Art. 26(6)"
+        ],
+        "nist_ai_rmf": [
+          "MEASURE 2.8",
+          "MANAGE 4.1"
+        ],
+        "iso_42001": [
+          "A.6.2.8",
+          "7.5"
+        ],
+        "oecd_ai": [
+          "1.5"
+        ]
+      },
+      "legally_binding": true,
+      "priority": "high",
+      "weight": 3
+    },
+    {
+      "control_id": "OPS-02",
+      "domain": "Operations & Monitoring",
+      "title": "Post-deployment monitoring",
+      "status": "met",
+      "score": 0.75,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "'model-risk-procedure.md' addresses 4 of 4 expected elements.",
+      "gaps": [],
+      "citations": [
+        {
+          "source": "doc:model-risk-procedure.md",
+          "quote": "A model monitoring dashboard tracks population drift monthly",
+          "verified": true
+        },
+        {
+          "source": "doc:model-risk-procedure.md",
+          "quote": "Model changes follow change control: peer review, sign-off by Model Validation, and a documented rollback plan",
+          "verified": true
+        }
+      ],
+      "recommendations": [],
+      "frameworks": {
+        "eu_ai_act": [
+          "Art. 72",
+          "Art. 26(5)"
+        ],
+        "nist_ai_rmf": [
+          "MEASURE 2.4",
+          "MEASURE 3.1",
+          "MANAGE 4.1"
+        ],
+        "iso_42001": [
+          "9.1",
+          "A.6.2.6"
+        ],
+        "oecd_ai": [
+          "1.4"
+        ]
+      },
+      "legally_binding": true,
+      "priority": null,
+      "weight": 3
+    },
+    {
+      "control_id": "OPS-03",
+      "domain": "Operations & Monitoring",
+      "title": "Incident management and regulatory reporting",
+      "status": "partial",
+      "score": 0.6,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "'incident-response.md' addresses 4 of 4 expected elements. The document itself indicates the control is incomplete or only planned.",
+      "gaps": [
+        "Stated as absent or planned: \"AI-specific failures (for example a model producing discriminatory outcomes) are not yet covered by this plan.\""
+      ],
+      "citations": [
+        {
+          "source": "doc:incident-response.md",
+          "quote": "Security Incident Response Plan",
+          "verified": true
+        },
+        {
+          "source": "doc:incident-response.md",
+          "quote": "Personal data breaches are reported to the supervisory authority within 72 hours",
+          "verified": true
+        },
+        {
+          "source": "doc:incident-response.md",
+          "quote": "A post-incident review identifies root cause.",
+          "verified": true
+        }
+      ],
+      "recommendations": [
+        {
+          "action": "Extend the incident process to AI harms and malfunctions, with severity criteria, regulator notification deadlines and post-incident review.",
+          "priority": "medium",
+          "effort": "medium",
+          "owner": "CISO / AI Governance Lead"
+        }
+      ],
+      "frameworks": {
+        "eu_ai_act": [
+          "Art. 73",
+          "Art. 20",
+          "Art. 26(5)"
+        ],
+        "gdpr": [
+          "Art. 33",
+          "Art. 34"
+        ],
+        "india_dpdp": [
+          "s. 8(6)"
+        ],
+        "nist_ai_rmf": [
+          "GOVERN 4.3",
+          "MANAGE 4.3"
+        ],
+        "iso_42001": [
+          "A.8.4",
+          "10.2"
+        ],
+        "colorado_ai_act": [
+          "6-1-1702(5)",
+          "6-1-1703(7)"
+        ]
+      },
+      "legally_binding": true,
+      "priority": "medium",
+      "weight": 3
+    },
+    {
+      "control_id": "OPS-04",
+      "domain": "Operations & Monitoring",
+      "title": "Corrective action, withdrawal and decommissioning",
+      "status": "gap",
+      "score": 0.0,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "No evidence found.",
+      "gaps": [
+        "No document found that addresses this control."
+      ],
+      "citations": [],
+      "recommendations": [
+        {
+          "action": "Define suspension and decommissioning criteria and a retirement procedure covering model, data and user communication.",
+          "priority": "medium",
+          "effort": "low",
+          "owner": "System Owner"
+        }
+      ],
+      "frameworks": {
+        "eu_ai_act": [
+          "Art. 20"
+        ],
+        "nist_ai_rmf": [
+          "GOVERN 1.7",
+          "MANAGE 2.4"
+        ],
+        "iso_42001": [
+          "A.6.2.6",
+          "10.2"
+        ]
+      },
+      "legally_binding": true,
+      "priority": "medium",
+      "weight": 1
+    },
+    {
+      "control_id": "TPR-01",
+      "domain": "Third-Party & Supply Chain",
+      "title": "Vendor and third-party AI due diligence",
+      "status": "gap",
+      "score": 0.3,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "'ai-policy.md' addresses 2 of 4 expected elements. The document itself indicates the control is incomplete or only planned. Management reports the control is not in place. Documents mention the topic, so they may be drafts or not operational.",
+      "gaps": [
+        "No evidence of: due diligence / vendor assessment / risk assessment",
+        "No evidence of: contract / data processing agreement / dpa",
+        "Stated as absent or planned: \"A guardrail and hallucination evaluation standard will be developed in 2027.\""
+      ],
+      "citations": [
+        {
+          "source": "doc:ai-policy.md",
+          "quote": "This AI policy applies to every AI system that Acme builds, buys or embeds in a product, including vendor tools.",
+          "verified": true
+        },
+        {
+          "source": "doc:ai-policy.md",
+          "quote": "Acme Lending AI Policy",
+          "verified": true
+        }
+      ],
+      "recommendations": [
+        {
+          "action": "Add AI-specific due diligence to procurement and contract clauses covering documentation, permitted use, audit rights, incident notice and model change notification.",
+          "priority": "high",
+          "effort": "medium",
+          "owner": "Procurement / Vendor Risk"
+        }
+      ],
+      "frameworks": {
+        "eu_ai_act": [
+          "Art. 25",
+          "Art. 26(1)"
+        ],
+        "gdpr": [
+          "Art. 28"
+        ],
+        "nist_ai_rmf": [
+          "GOVERN 6.1",
+          "GOVERN 6.2",
+          "MAP 4.1",
+          "MAP 4.2",
+          "MANAGE 3.1"
+        ],
+        "iso_42001": [
+          "A.10.2",
+          "A.10.3"
+        ]
+      },
+      "legally_binding": true,
+      "priority": "high",
+      "weight": 3
+    },
+    {
+      "control_id": "TPR-02",
+      "domain": "Third-Party & Supply Chain",
+      "title": "Monitoring of third-party and pre-trained models",
+      "status": "gap",
+      "score": 0.0,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "No evidence found.",
+      "gaps": [
+        "No document found that addresses this control.",
+        "Technical signals not detected: dependency_lock, eval_scripts"
+      ],
+      "citations": [],
+      "recommendations": [
+        {
+          "action": "Pin and record vendor model versions, re-run your evaluation suite on every model change, and define a fallback for vendor outage or withdrawal.",
+          "priority": "high",
+          "effort": "low",
+          "owner": "Engineering Lead"
+        }
+      ],
+      "frameworks": {
+        "nist_ai_rmf": [
+          "MANAGE 3.1",
+          "MANAGE 3.2",
+          "GOVERN 6.2"
+        ],
+        "iso_42001": [
+          "A.10.3",
+          "A.4.4"
+        ],
+        "eu_ai_act": [
+          "Art. 25(4)"
+        ]
+      },
+      "legally_binding": true,
+      "priority": "high",
+      "weight": 2
+    },
+    {
+      "control_id": "GPA-01",
+      "domain": "Third-Party & Supply Chain",
+      "title": "General-purpose AI model provider obligations",
+      "status": "not_applicable",
+      "score": 0.0,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "Out of scope: no applicable framework requires this control for the declared systems and jurisdictions.",
+      "gaps": [],
+      "citations": [],
+      "recommendations": [],
+      "frameworks": {
+        "eu_ai_act": [
+          "Art. 53",
+          "Art. 55",
+          "Annex XI",
+          "Annex XII"
+        ],
+        "nist_ai_rmf": [
+          "AI 600-1"
+        ]
+      },
+      "legally_binding": false,
+      "priority": null,
+      "weight": 3
+    },
+    {
+      "control_id": "GEN-01",
+      "domain": "Generative AI Safeguards",
+      "title": "Generative AI safety evaluation and guardrails",
+      "status": "partial",
+      "score": 0.6,
+      "confidence": "low",
+      "method": "rules",
+      "rationale": "'ai-policy.md' addresses 4 of 4 expected elements. The document itself indicates the control is incomplete or only planned.",
+      "gaps": [
+        "Stated as absent or planned: \"A guardrail and hallucination evaluation standard will be developed in 2027.\"",
+        "Technical signals not detected: guardrails_lib, adversarial_testing, eval_scripts"
+      ],
+      "citations": [
+        {
+          "source": "doc:ai-policy.md",
+          "quote": "Generative AI",
+          "verified": true
+        },
+        {
+          "source": "doc:ai-policy.md",
+          "quote": "A guardrail and hallucination evaluation standard will be developed in 2027.",
+          "verified": true
+        },
+        {
+          "source": "doc:ai-policy.md",
+          "quote": "Staff may only use approved tools for generative AI",
+          "verified": true
+        }
+      ],
+      "recommendations": [
+        {
+          "action": "Add input/output guardrails, evaluate hallucination and prompt-injection resistance before release, and publish an acceptable-use policy for generative AI tools.",
+          "priority": "medium",
+          "effort": "medium",
+          "owner": "Product Lead / CISO"
+        }
+      ],
+      "frameworks": {
+        "nist_ai_rmf": [
+          "AI 600-1",
+          "MEASURE 2.6",
+          "MEASURE 2.7"
+        ],
+        "eu_ai_act": [
+          "Art. 50(2)",
+          "Art. 15"
+        ],
+        "iso_42001": [
+          "A.9.2",
+          "A.6.2.4"
+        ],
+        "oecd_ai": [
+          "1.4"
+        ]
+      },
+      "legally_binding": true,
+      "priority": "medium",
+      "weight": 2
+    }
+  ],
+  "executive_summary": "Acme Lending (example) scores 46 out of 100 against the unified AI governance control catalog (Level 3 - Defined). 10 of 32 applicable controls are met, 7 are partly met and 15 are gaps.\n\nBinding law in scope: EU Artificial Intelligence Act (49/100); General Data Protection Regulation (46/100); Colorado Artificial Intelligence Act (52/100); NYC Automated Employment Decision Tools Law (14/100); India Digital Personal Data Protection Act (34/100). 4 critical gap(s) carry direct legal exposure: DAT-01 Data quality, provenance and documentation, DEV-03 Fairness and non-discrimination testing, DEV-04 Security and adversarial resilience, RSK-04 Conformity assessment, declaration and registration. Systems screened as high-risk: CreditScore v4, TalentRank.\n\nWeakest areas: Third-Party & Supply Chain (18/100) and Data Governance (20/100).\n\nThis summary was produced by the rule-based evaluator, which checks whether evidence addresses each control, not whether the control is effective. Run with AI mode enabled for a substantive review and tailored recommendations.",
+  "roadmap": [
+    {
+      "phase": "Stabilise",
+      "horizon": "0-30 days",
+      "actions": [
+        {
+          "action": "Produce a datasheet for every dataset used in AI development (source, licence, preparation, known gaps), and add automated data-quality checks and versioning.",
+          "owner": "Head of Data",
+          "control_ids": [
+            "DAT-01"
+          ]
+        },
+        {
+          "action": "Add group fairness metrics to the evaluation suite, set tolerances, and commission an independent bias audit where the law requires one.",
+          "owner": "Head of Data Science",
+          "control_ids": [
+            "DEV-03"
+          ]
+        },
+        {
+          "action": "Threat-model each AI system, run adversarial/red-team testing before release, and harden model, data and pipeline access.",
+          "owner": "Chief Information Security Officer",
+          "control_ids": [
+            "DEV-04"
+          ]
+        },
+        {
+          "action": "Plan the conformity assessment route for each high-risk system, prepare the declaration of conformity and register the system before placing it on the market.",
+          "owner": "Regulatory Affairs / Product Compliance",
+          "control_ids": [
+            "RSK-04"
+          ]
+        },
+        {
+          "action": "Maintain an obligations register mapping each AI system to the laws and standards that apply to it, with an owner responsible for horizon scanning.",
+          "owner": "General Counsel / Compliance",
+          "control_ids": [
+            "GOV-04"
+          ]
+        },
+        {
+          "action": "Pin and record vendor model versions, re-run your evaluation suite on every model change, and define a fallback for vendor outage or withdrawal.",
+          "owner": "Engineering Lead",
+          "control_ids": [
+            "TPR-02"
+          ]
+        },
+        {
+          "action": "Add clear AI-interaction notices at the point of use and label or watermark AI-generated content.",
+          "owner": "Product Lead",
+          "control_ids": [
+            "TRN-01"
+          ]
+        },
+        {
+          "action": "Publish instructions for use for each system stating capabilities, limitations, intended and prohibited uses, and oversight expectations.",
+          "owner": "Product Lead",
+          "control_ids": [
+            "TRN-02"
+          ]
+        },
+        {
+          "action": "Issue advance notices to people subject to AI-assisted decisions and publish the required summaries (for example bias audit results) on your website.",
+          "owner": "Legal / HR / Product",
+          "control_ids": [
+            "TRN-04"
+          ]
+        }
+      ]
+    },
+    {
+      "phase": "Build",
+      "horizon": "31-90 days",
+      "actions": [
+        {
+          "action": "Extend the rights-request procedure to AI systems (including training data and model outputs) and define safeguards for solely automated decisions.",
+          "owner": "Data Protection Officer",
+          "control_ids": [
+            "DAT-04"
+          ]
+        },
+        {
+          "action": "Add AI governance to the internal audit plan, hold a periodic management review, and track corrective actions to closure.",
+          "owner": "Head of Internal Audit",
+          "control_ids": [
+            "GOV-06"
+          ]
+        },
+        {
+          "action": "Add a bias examination step to data preparation covering protected groups and proxies, and document findings and mitigations.",
+          "owner": "Head of Data Science",
+          "control_ids": [
+            "DAT-02"
+          ]
+        },
+        {
+          "action": "Add AI-specific due diligence to procurement and contract clauses covering documentation, permitted use, audit rights, incident notice and model change notification.",
+          "owner": "Procurement / Vendor Risk",
+          "control_ids": [
+            "TPR-01"
+          ]
+        },
+        {
+          "action": "Define the oversight model for each system (who reviews what, when), build override and stop mechanisms, and train reviewers on automation bias.",
+          "owner": "System Owner / Operations Lead",
+          "control_ids": [
+            "HUM-01"
+          ]
+        },
+        {
+          "action": "Adopt a combined AI/data-protection/fundamental-rights impact assessment template and require a completed assessment before go-live and on material change.",
+          "owner": "Data Protection Officer / AI Governance Lead",
+          "control_ids": [
+            "RSK-03"
+          ]
+        },
+        {
+          "action": "Log inputs, outputs, model version and human interventions for each decision, with tamper-evident storage and a defined retention period.",
+          "owner": "Engineering Lead / MLOps",
+          "control_ids": [
+            "OPS-01"
+          ]
+        },
+        {
+          "action": "Record the lawful basis or consent for each AI processing purpose, update privacy notices, and apply minimisation, retention limits and pseudonymisation to training and inference data.",
+          "owner": "Data Protection Officer",
+          "control_ids": [
+            "DAT-03"
+          ]
+        },
+        {
+          "action": "Define suspension and decommissioning criteria and a retirement procedure covering model, data and user communication.",
+          "owner": "System Owner",
+          "control_ids": [
+            "OPS-04"
+          ]
+        },
+        {
+          "action": "Roll out role-based AI literacy training (all staff, operators, developers, leadership) and track completion.",
+          "owner": "HR / Learning & Development",
+          "control_ids": [
+            "GOV-05"
+          ]
+        },
+        {
+          "action": "Provide an appeal channel with human review and a correction route for every consequential AI-assisted decision.",
+          "owner": "Customer Operations / HR",
+          "control_ids": [
+            "HUM-02"
+          ]
+        },
+        {
+          "action": "Add input/output guardrails, evaluate hallucination and prompt-injection resistance before release, and publish an acceptable-use policy for generative AI tools.",
+          "owner": "Product Lead / CISO",
+          "control_ids": [
+            "GEN-01"
+          ]
+        },
+        {
+          "action": "Extend the incident process to AI harms and malfunctions, with severity criteria, regulator notification deadlines and post-incident review.",
+          "owner": "CISO / AI Governance Lead",
+          "control_ids": [
+            "OPS-03"
+          ]
+        }
+      ]
+    }
+  ],
+  "evidence_index": [
+    {
+      "id": "inventory",
+      "connector": "inventory",
+      "kind": "inventory",
+      "title": "AI system inventory",
+      "ref": ""
+    },
+    {
+      "id": "doc:ai-policy.md",
+      "connector": "documents",
+      "kind": "document",
+      "title": "ai-policy.md",
+      "ref": "examples/acme/policies/ai-policy.md"
+    },
+    {
+      "id": "doc:incident-response.md",
+      "connector": "documents",
+      "kind": "document",
+      "title": "incident-response.md",
+      "ref": "examples/acme/policies/incident-response.md"
+    },
+    {
+      "id": "doc:model-risk-procedure.md",
+      "connector": "documents",
+      "kind": "document",
+      "title": "model-risk-procedure.md",
+      "ref": "examples/acme/policies/model-risk-procedure.md"
+    },
+    {
+      "id": "repo:repo",
+      "connector": "repo",
+      "kind": "repository",
+      "title": "Repository scan: repo",
+      "ref": "examples/acme/repo"
+    },
+    {
+      "id": "repo:repo/MODEL_CARD.md",
+      "connector": "repo",
+      "kind": "document",
+      "title": "repo/MODEL_CARD.md",
+      "ref": "examples/acme/repo/MODEL_CARD.md"
+    },
+    {
+      "id": "attestations",
+      "connector": "questionnaire",
+      "kind": "attestation",
+      "title": "Self-assessment questionnaire",
+      "ref": ""
+    }
+  ],
+  "warnings": [
+    "System 'TalentRank' is declared 'limited' but screening suggests 'high': Matches high-risk area(s): employment. The stricter tier is used; confirm the classification."
+  ]
+}

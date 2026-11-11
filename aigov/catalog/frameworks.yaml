@@ -1,0 +1,78 @@
+# Framework registry.
+# `binding: true`  -> law/regulation (gaps carry legal exposure and are weighted up).
+# `applies_when`   -> all listed conditions must hold for the framework to be in scope.
+#     jurisdictions: any-of match against entity.jurisdictions (prefix match, so "US" matches "US-CO")
+#     flags:         all-of match against derived profile flags (see engine/applicability.py)
+# Add a framework by adding an entry here and adding its key to `mappings` in controls.yaml.
+
+frameworks:
+  eu_ai_act:
+    name: EU Artificial Intelligence Act
+    citation: Regulation (EU) 2024/1689
+    kind: law
+    binding: true
+    region: European Union
+    applies_when: {jurisdictions: [EU]}
+    note: >-
+      Obligations phase in over several years and the timetable has been subject to
+      amendment proposals. Confirm the dates currently in force for your role and risk tier.
+
+  gdpr:
+    name: General Data Protection Regulation
+    citation: Regulation (EU) 2016/679
+    kind: law
+    binding: true
+    region: European Union
+    applies_when: {jurisdictions: [EU], flags: [personal_data]}
+
+  colorado_ai_act:
+    name: Colorado Artificial Intelligence Act
+    citation: Colorado SB 24-205 (C.R.S. 6-1-1701 et seq.)
+    kind: law
+    binding: true
+    region: Colorado, USA
+    applies_when: {jurisdictions: [US-CO], flags: [consequential_decisions]}
+    note: >-
+      Effective date and scope have been revised by the legislature since enactment.
+      Verify the current text before relying on this mapping.
+
+  nyc_ll144:
+    name: NYC Automated Employment Decision Tools Law
+    citation: NYC Local Law 144 of 2021 (Admin. Code 20-870 et seq.)
+    kind: law
+    binding: true
+    region: New York City, USA
+    applies_when: {jurisdictions: [US-NY], flags: [employment]}
+
+  india_dpdp:
+    name: India Digital Personal Data Protection Act
+    citation: Act No. 22 of 2023, with DPDP Rules 2025
+    kind: law
+    binding: true
+    region: India
+    applies_when: {jurisdictions: [IN], flags: [personal_data]}
+    note: Provisions commence in phases; confirm which are in force.
+
+  nist_ai_rmf:
+    name: NIST AI Risk Management Framework
+    citation: NIST AI 100-1 (AI RMF 1.0) and AI 600-1 (Generative AI Profile)
+    kind: framework
+    binding: false
+    region: Global (US origin)
+    applies_when: {}
+
+  iso_42001:
+    name: ISO/IEC 42001 AI Management System
+    citation: ISO/IEC 42001:2023
+    kind: standard
+    binding: false
+    region: Global
+    applies_when: {}
+
+  oecd_ai:
+    name: OECD AI Principles
+    citation: OECD/LEGAL/0449 (2019, revised 2024)
+    kind: principles
+    binding: false
+    region: Global
+    applies_when: {}

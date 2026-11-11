@@ -1,0 +1,11 @@
+GOV-01: {answer: yes, notes: "AI Policy v2.1 approved March 2026", evidence_ref: "policies/ai-policy.md"}
+GOV-02: {answer: yes}
+GOV-05: {answer: partial, notes: "Training delivered to data science team only"}
+GOV-06: {answer: no}
+RSK-03: {answer: partial, notes: "DPIA exists for CreditScore; none for TalentRank or Ava"}
+DAT-03: {answer: yes, notes: "Covered by the group privacy programme"}
+DEV-03: {answer: no, notes: "No bias audit of TalentRank has been commissioned"}
+HUM-02: {answer: yes}
+OPS-01: {answer: partial}
+TPR-01: {answer: no}
+TRN-04: {answer: no}
