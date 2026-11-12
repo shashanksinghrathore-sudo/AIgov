@@ -22,11 +22,35 @@ aigov serve
 
 Open http://127.0.0.1:8080. `aigov demo` loads a fictional lender with three AI systems, policy documents, a scanned code repository and some answers, so every page has data on it.
 
-With Docker (untested in this build environment):
+## Put it online for your team
+
+The app is one container with one SQLite file. Anyone with the URL and the access token can use it.
+On a public address the server will not start without `AIGOV_API_TOKEN`; visitors enter the token once in the browser.
+
+### Option A: Render (one click, from this GitHub repo)
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/shashanksinghrathore-sudo/aigov)
+
+1. Click the button, or go to Render Dashboard > New > Blueprint and pick this repository. Render reads `render.yaml`.
+2. Approve the plan. The Blueprint asks for a paid "starter" instance because it attaches a 1 GB persistent disk for the database.
+   To try it for free, change `plan: starter` to `plan: free` and delete the `disk:` block, but data is then lost on every restart or redeploy, and free services sleep when idle.
+3. When the deploy finishes, open the service's **Environment** tab and copy the generated `AIGOV_API_TOKEN`.
+4. Share the `https://aigov-xxxx.onrender.com` URL and the token with your team. Optionally run `aigov demo` from the service's Shell tab to load the example company.
+
+### Option B: any server or cloud with Docker
 
 ```bash
-docker build -t aigov . && docker run -p 8080:8080 -v aigov-data:/data aigov
+docker build -t aigov .
 ```
+
+```bash
+docker run -d -p 8080:8080 -v aigov-data:/data -e AIGOV_API_TOKEN="$(openssl rand -hex 24)" --name aigov aigov
+```
+
+Put it behind HTTPS (a reverse proxy such as Caddy or nginx, or your cloud's load balancer) before sharing the address. The token is sent with every request and must not travel over plain HTTP.
+The same image runs on Railway, Fly.io, Google Cloud Run, Azure Container Apps or AWS App Runner. The container listens on `$PORT` (default 8080) and keeps its data in `/data`, so mount persistent storage there.
+
+**Sharing model:** everyone with the token sees and edits the same entities. Give each team its own deployment, or keep the token to the people who should see the data. Rotate it by changing `AIGOV_API_TOKEN` and restarting.
 
 ## The rule library
 

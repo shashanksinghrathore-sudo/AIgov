@@ -137,8 +137,14 @@ def cmd_serve(args) -> int:
     import uvicorn
     if args.db:
         os.environ["AIGOV_DB"] = args.db
+    local = args.host in ("127.0.0.1", "localhost", "::1")
+    if not local and not os.environ.get("AIGOV_API_TOKEN") and not args.allow_no_auth:
+        print("Refusing to listen on a public address without AIGOV_API_TOKEN set: anyone could read and change the data.\n"
+              "Set AIGOV_API_TOKEN to a long random value, or pass --allow-no-auth if access is controlled elsewhere.", file=sys.stderr)
+        return 1
     print(f"AI Compliance Platform on http://{args.host}:{args.port}  (data: {os.environ.get('AIGOV_DB', 'aigov-data/aigov.db')})", file=sys.stderr)
-    uvicorn.run("aigov.web.app:create_app", factory=True, host=args.host, port=args.port)
+    uvicorn.run("aigov.web.app:create_app", factory=True, host=args.host, port=args.port,
+                proxy_headers=True, forwarded_allow_ips="*" if not local else "127.0.0.1")
     return 0
 
 
@@ -148,7 +154,9 @@ def main(argv: list[str] | None = None) -> int:
 
     s = sub.add_parser("serve", help="start the web platform")
     s.add_argument("--host", default="127.0.0.1")
-    s.add_argument("--port", type=int, default=8080)
+    s.add_argument("--port", type=int, default=int(__import__("os").environ.get("PORT", "8080")),
+                   help="port (default: $PORT, else 8080)")
+    s.add_argument("--allow-no-auth", action="store_true", help="allow a public bind without AIGOV_API_TOKEN")
     s.add_argument("--db", help="SQLite database file (default aigov-data/aigov.db)")
     s.set_defaults(fn=cmd_serve)
 

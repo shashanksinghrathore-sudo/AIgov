@@ -1,0 +1,19 @@
+# Render Blueprint: builds the Dockerfile and runs the platform with a persistent disk for the
+# SQLite database and a generated access token. Deploy via Render Dashboard > New > Blueprint,
+# or the "Deploy to Render" button in the README. Persistent disks need a paid instance type.
+services:
+  - type: web
+    name: aigov
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: AIGOV_API_TOKEN
+        generateValue: true
+      - key: AIGOV_DB
+        value: /data/aigov.db
+    disk:
+      name: aigov-data
+      mountPath: /data
+      sizeGB: 1
