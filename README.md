@@ -8,8 +8,20 @@ All testing is done by rules defined inside the platform. The server makes no ou
 
 ## Quick start
 
+Requires Python 3.10+. On macOS use `python3` (install it from python.org or with `brew install python` if missing).
+
 ```bash
-pip install -e ".[docs]"
+python3 -m venv .venv
+```
+
+```bash
+source .venv/bin/activate
+```
+
+On Windows activate with `.venv\Scripts\activate` instead.
+
+```bash
+python3 -m pip install -e ".[docs]"
 ```
 
 ```bash
@@ -112,7 +124,11 @@ aigov questionnaire --framework eu_ai_act --out answers.yaml
 ## Development
 
 ```bash
-python -m pytest
+python3 -m pip install -e ".[dev]"
+```
+
+```bash
+python3 -m pytest
 ```
 
 The suite includes a guard that fails any test that opens a non-local network connection.
